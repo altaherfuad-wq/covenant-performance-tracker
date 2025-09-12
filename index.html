@@ -19778,6 +19778,290 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
+
+<style id="cheque-reminder-align-tweak">
+  #kpiLabel_monthlyNeeded{ display:flex !important; align-items:center !important; gap:6px !important; }
+  #kpiLabel_monthlyNeeded #cheqMirrorSlot{ margin-left:auto !important; padding-left:8px !important; }
+</style>
+
+<script id="app-wipe-broom">
+(function () {
+  function insertBroom() {
+    // Put the tiny 🧹 next to the 🎨 button if present, else in the header right area.
+    var after = document.getElementById('btnColorPlay');
+    var host  = (after && after.parentElement) || document.querySelector('header .right') || document.body;
+
+    var btn = document.createElement('button');
+    btn.id = 'btnAppWipe';
+    btn.className = 'small ghost';
+    btn.title = 'Clear ONLY this app’s saved data (requires typing "wipe app")';
+    btn.textContent = '🧹';
+    btn.style.marginLeft = '6px';
+    btn.style.cursor = 'pointer';
+
+    if (after && after.nextSibling) {
+      after.parentElement.insertBefore(btn, after.nextSibling);
+    } else {
+      host.appendChild(btn);
+    }
+
+    btn.addEventListener('click', function () {
+      var phrase = 'wipe app'; // CASE-SENSITIVE
+      var typed  = prompt('Type exactly: ' + phrase + '\n\nThis will clear ONLY this app’s saved data.');
+      if (typed !== phrase) {
+        alert('Cancelled (text did not match exactly).');
+        return;
+      }
+
+      // Only remove this app’s keys (strict, case-sensitive matching)
+      var PREFIXES  = [
+        'performanceTracker:',
+        'ownerLabel:',
+        'monthlyNotes:',
+        'chequeReminder:'
+      ];
+      var EXACT_KEYS = [
+        'selectedOwnerId'
+      ];
+
+      var toRemove = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (!k) continue;
+        if (EXACT_KEYS.indexOf(k) !== -1 || PREFIXES.some(function (p) { return k.startsWith(p); })) {
+          toRemove.push(k);
+        }
+      }
+      // Clean up known legacy keys (if any)
+      ['chequeReminder', 'cheq:reminder'].forEach(function (k) { toRemove.push(k); });
+
+      // Deduplicate and remove (case-sensitive)
+      toRemove = Array.from(new Set(toRemove));
+      toRemove.forEach(function (k) { try { localStorage.removeItem(k); } catch (e) {} });
+
+      // Soft refresh UI; fall back to reload if nothing to refresh
+      var refreshed = false;
+      try { if (window.refreshChequeReminderUI) { window.refreshChequeReminderUI(); refreshed = true; } } catch(e){}
+      try { if (window.renderAll)              { window.renderAll();              refreshed = true; } } catch(e){}
+      try { if (window.updateCurrentOwnerData) { window.updateCurrentOwnerData(); refreshed = true; } } catch(e){}
+      try { if (window.refreshNextTargetMain)  { window.refreshNextTargetMain();  refreshed = true; } } catch(e){}
+      try { if (window.refreshNextNeededRibbon){ window.refreshNextNeededRibbon();refreshed = true; } } catch(e){}
+
+      alert('App data cleared (' + toRemove.length + ' key' + (toRemove.length===1?'':'s') + ').');
+      if (!refreshed) { try { location.reload(); } catch(e){} }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', insertBroom);
+  } else {
+    insertBroom();
+  }
+})();
+</script>
+
+<style id="clear-all-style">
+  /* Match white + fine black border style and hide legacy tiny broom */
+  #btnClearAll{
+    background:#fff !important; color:#000 !important;
+    border:1px solid #000 !important; box-shadow:none !important; filter:none !important;
+  }
+  #btnClearAll:hover{ opacity:0.95; }
+  #btnAppWipe{ display:none !important; visibility:hidden !important; }
+</style>
+
+<script id="clear-all-widget">
+(function(){
+  function addClearAllBtn(){
+    var reset = document.getElementById('btnReset');
+    if(!reset || reset.__hasClearAll) return;
+
+    var btn = document.createElement('button');
+    btn.id = 'btnClearAll';
+    btn.className = 'ghost small';
+    btn.textContent = 'Clear all my data';
+    btn.title = 'Deletes ALL owners & years data saved by this app';
+    btn.style.marginLeft = '6px';
+
+    (reset.parentElement || reset).insertBefore(btn, reset.nextSibling);
+    reset.__hasClearAll = true;
+
+    btn.addEventListener('click', function(){
+      var phrase = 'clear all my data'; // CASE-SENSITIVE
+      var typed  = prompt('Type exactly: '+phrase+'\\n\\nThis will permanently delete ALL owners & years data saved by this page.');
+      if (typed !== phrase){ alert('Cancelled (text did not match exactly).'); return; }
+
+      var PREFIXES  = [
+        'performanceTracker:',
+        'ownerLabel:',
+        'monthlyNotes:',
+        'chequeReminder:'
+      ];
+      var EXACT_KEYS = [
+        'selectedOwnerId',
+        '__od_limit__','__od_eod__'
+      ];
+
+      var toRemove = [];
+      for (var i=0; i<localStorage.length; i++){
+        var k = localStorage.key(i); if(!k) continue;
+        if (EXACT_KEYS.indexOf(k) !== -1 || PREFIXES.some(function(p){ return k.startsWith(p); })){
+          toRemove.push(k);
+        }
+      }
+      ['chequeReminder','cheq:reminder'].forEach(function(k){ toRemove.push(k); });
+
+      toRemove = Array.from(new Set(toRemove));
+      toRemove.forEach(function(k){ try{ localStorage.removeItem(k); }catch(e){} });
+
+      var refreshed = false;
+      try{ if(window.CHEQ && typeof CHEQ.remove==='function'){ CHEQ.remove(); refreshed = true; } }catch(e){}
+      try{ if(window.refreshChequeReminderUI){ window.refreshChequeReminderUI(); refreshed = true; } }catch(e){}
+      try{ if(window.renderAll){ window.renderAll(); refreshed = true; } }catch(e){}
+      try{ if(window.updateCurrentOwnerData){ window.updateCurrentOwnerData(); refreshed = true; } }catch(e){}
+      try{ if(window.refreshNextTargetMain){ window.refreshNextTargetMain(); refreshed = true; } }catch(e){}
+      try{ if(window.refreshNextNeededRibbon){ window.refreshNextNeededRibbon(); refreshed = true; } }catch(e){}
+
+      if(!refreshed) location.reload();
+      alert('All app data cleared.');
+    });
+  }
+
+  function removeTinyBroom(){
+    try{
+      var b = document.getElementById('btnAppWipe');
+      if (b && b.parentNode) b.parentNode.removeChild(b);
+    }catch(e){}
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', function(){ addClearAllBtn(); removeTinyBroom(); });
+  }else{
+    setTimeout(function(){ addClearAllBtn(); removeTinyBroom(); }, 0);
+  }
+})();
+</script>
+
+<script id="cheque-reminder-scope-fix">
+(function(){
+  if (window.__chequeScopePatched) return;
+  window.__chequeScopePatched = true;
+
+  function normOwner(x){
+    if(!x) return 'owner1';
+    x = String(x).toLowerCase().trim();
+    x = x.replace(/\s+/g,'');
+    if (x==='ownerone' || x in {'1':'1','owner_1':'owner_1','owner-1':'owner-1','owner 1':'owner 1'}) return 'owner1';
+    if (x==='ownertwo' || x in {'2':'2','owner_2':'owner_2','owner-2':'owner-2','owner 2':'owner 2'}) return 'owner2';
+    return x;
+  }
+
+  function getOwnerId(){
+    try{
+      var id = localStorage.getItem('selectedOwnerId');
+      if (id) return normOwner(id);
+    }catch(e){}
+    var el = document.querySelector('#ownerSelect, select[name=\"owner\"], .owner-select, [data-owner]');
+    var v = el ? (el.value || el.getAttribute('data-owner') || el.textContent || '') : '';
+    if (v) return normOwner(v);
+    return 'owner1';
+  }
+
+  function getYear(){
+    try{
+      var y = localStorage.getItem('selectedYear');
+      if (y) {
+        var m = String(y).match(/\d{4}/);
+        if (m) return m[0];
+      }
+    }catch(e){}
+    var el = document.querySelector('#yearSelect, select[name=\"year\"], .year-select, .year-pill.active, [data-year]');
+    var raw = el ? (el.value || el.getAttribute('data-year') || el.textContent || '') : '';
+    var m = String(raw).match(/\d{4}/);
+    if (m) return m[0];
+    return String(new Date().getFullYear());
+  }
+
+  var BASE = 'chequeReminder';
+  function scopedKey(){
+    return BASE + ':' + getOwnerId() + ':' + getYear();
+  }
+
+  // One-time migration of legacy unscoped key to scoped (for the current owner/year)
+  try{
+    var legacy = localStorage.getItem(BASE);
+    if (legacy && !localStorage.getItem(scopedKey())){
+      localStorage.setItem(scopedKey(), legacy);
+      localStorage.removeItem(BASE);
+    }
+  }catch(e){}
+
+  // Patch only chequeReminder keys
+  var _get = localStorage.getItem.bind(localStorage);
+  var _set = localStorage.setItem.bind(localStorage);
+  var _rem = localStorage.removeItem.bind(localStorage);
+
+  if (!localStorage.__chequePatched){
+    localStorage.__chequePatched = true;
+
+    localStorage.getItem = function(k){
+      if (k === BASE || (typeof k === 'string' && k.indexOf(BASE+':') === 0)){
+        return _get(scopedKey());
+      }
+      return _get(k);
+    };
+
+    localStorage.setItem = function(k,v){
+      if (k === BASE || (typeof k === 'string' && k.indexOf(BASE+':') === 0)){
+        return _set(scopedKey(), v);
+      }
+      return _set(k,v);
+    };
+
+    localStorage.removeItem = function(k){
+      if (k === BASE || (typeof k === 'string' && k.indexOf(BASE+':') === 0)){
+        try{ _rem(scopedKey()); }catch(e){}
+        try{ _rem(BASE); }catch(e){}
+        return;
+      }
+      return _rem(k);
+    };
+  }
+
+  function refreshUI(){
+    try{ if (window.refreshChequeReminderUI) window.refreshChequeReminderUI(); }catch(e){}
+    try{ if (window.renderAll) window.renderAll(); }catch(e){}
+  }
+
+  function bindSelectWatcher(sel){
+    if (!sel || sel.__chequeScopeBound) return;
+    sel.addEventListener('change', function(){ setTimeout(refreshUI, 0); });
+    sel.__chequeScopeBound = true;
+  }
+
+  // Bind to likely owner/year selectors
+  bindSelectWatcher(document.querySelector('#ownerSelect'));
+  bindSelectWatcher(document.querySelector('select[name=\"owner\"]'));
+  bindSelectWatcher(document.querySelector('.owner-select'));
+  bindSelectWatcher(document.querySelector('#yearSelect'));
+  bindSelectWatcher(document.querySelector('select[name=\"year\"]'));
+  bindSelectWatcher(document.querySelector('.year-select'));
+
+  // Observe DOM in case selectors are replaced dynamically
+  var obs = new MutationObserver(function(muts){
+    bindSelectWatcher(document.querySelector('#ownerSelect'));
+    bindSelectWatcher(document.querySelector('select[name=\"owner\"]'));
+    bindSelectWatcher(document.querySelector('.owner-select'));
+    bindSelectWatcher(document.querySelector('#yearSelect'));
+    bindSelectWatcher(document.querySelector('select[name=\"year\"]'));
+    bindSelectWatcher(document.querySelector('.year-select'));
+  });
+  try{ obs.observe(document.documentElement, {subtree:true, childList:true}); }catch(e){}
+
+  // Initial UI sync
+  setTimeout(refreshUI, 0);
+})();
+</script>
 </body>
 </html>
 
@@ -20396,6 +20680,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
+<style id="cheque-reminder-align-tweak">
+  #kpiLabel_monthlyNeeded{ display:flex !important; align-items:center !important; gap:6px !important; }
+  #kpiLabel_monthlyNeeded #cheqMirrorSlot{ margin-left:auto !important; padding-left:8px !important; }
+</style>
+
 </body></html>');
       var clone = target.cloneNode(true);
       clone.style.position = 'static';
@@ -20571,6 +20861,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
+
+<style id="cheque-reminder-align-tweak">
+  #kpiLabel_monthlyNeeded{ display:flex !important; align-items:center !important; gap:6px !important; }
+  #kpiLabel_monthlyNeeded #cheqMirrorSlot{ margin-left:auto !important; padding-left:8px !important; }
+</style>
 
 </body></html>');
       var clone = target.cloneNode(true);
@@ -20988,11 +21284,11 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     prefill(){
       const s = CHEQ.load();
-      const hint = (CHEQ.getMonthlyNeededAmount ? CHEQ.getMonthlyNeededAmount() : null) ?? CHEQ.getNextNeededAmount();
+      const hint = (CHEQ.getMonthlyNeededAmount ? CHEQ.getMonthlyNeededAmount() : null);
       const hintEl = document.getElementById('cheqAmtHint');
       const amtEl  = document.getElementById('cheqAmount');
       if (hintEl){
-        if (hint!=null){ hintEl.textContent = 'Hint from Next Needed: ' + CHEQ.fmt(hint); if(!s.amount) amtEl.value = Math.round(hint); }
+        if (hint!=null){ hintEl.textContent = 'Hint from 📊 Mo. Needed Inflow To End of the Year — remains: ' + CHEQ.fmt(hint); if(!s.amount) amtEl.value = Math.round(hint); }
         else { hintEl.textContent = 'Enter cheque amount manually'; }
       }
       if (s.dueISO){
@@ -21115,5 +21411,231 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 })();
 </script>
+
+<style id="cheque-reminder-align-tweak">
+  #kpiLabel_monthlyNeeded{ display:flex !important; align-items:center !important; gap:6px !important; }
+  #kpiLabel_monthlyNeeded #cheqMirrorSlot{ margin-left:auto !important; padding-left:8px !important; }
+</style>
+
 </body>
 </html>
+
+
+<!-- === Cheque Reminder: HARD ISOLATION PATCH (owner + year) === -->
+<script id="cheq-hard-isolation-patch">
+(function(){
+  function getOwnerId(){
+    try {
+      var sel = document.getElementById('ownerSelect');
+      if (sel && sel.value !== undefined && sel.value !== null && sel.value !== '') return String(sel.value);
+      if (typeof window.currentOwner !== 'undefined') return String(window.currentOwner);
+    } catch(e){}
+    return 'owner0';
+  }
+  function getYearVal(){
+    try {
+      if (typeof window.getSelectedYear === 'function') return Number(window.getSelectedYear());
+      var y = document.getElementById('yearInput');
+      if (y && y.value) return Number(y.value);
+      if (typeof window.currentYear !== 'undefined') return Number(window.currentYear);
+    } catch(e){}
+    return (new Date()).getFullYear();
+  }
+  function storageKey(){
+    return "chequeReminder:" + getOwnerId() + ":" + getYearVal();
+  }
+  // expose for debugging
+  window.__CHEQ_storageKey = storageKey;
+
+  // Migrate/clean any legacy generic keys that could leak across owners/years
+  try { localStorage.removeItem('chequeReminder'); } catch(e){}
+  try { localStorage.removeItem('cheq:reminder'); } catch(e){}
+
+  // Ensure CHEQ namespace exists
+  window.CHEQ = window.CHEQ || {};
+
+  // Override load/save/remove to be strictly owner+year scoped
+  window.CHEQ.load = function(){
+    try {
+      var raw = localStorage.getItem(storageKey());
+      return raw ? JSON.parse(raw) : null;
+    } catch(e){ return null; }
+  };
+  window.CHEQ.save = function(state){
+    try {
+      localStorage.setItem(storageKey(), JSON.stringify(state || {}));
+    } catch(e){}
+    // Update UI if helper exists
+    try {
+      if (typeof window.CHEQ.refreshBadge === 'function') setTimeout(window.CHEQ.refreshBadge, 0);
+      if (typeof window.refreshChequeReminderUI === 'function') setTimeout(window.refreshChequeReminderUI, 0);
+    } catch(e){}
+  };
+  window.CHEQ.remove = function(){
+    try { localStorage.removeItem(storageKey()); } catch(e){}
+    try {
+      if (typeof window.CHEQ.refreshBadge === 'function') setTimeout(window.CHEQ.refreshBadge, 0);
+      if (typeof window.refreshChequeReminderUI === 'function') setTimeout(window.refreshChequeReminderUI, 0);
+    } catch(e){}
+  };
+
+  // Refresh the reminder UI whenever owner or year changes
+  function hookRefreshers(){
+    try {
+      var sel = document.getElementById('ownerSelect');
+      if (sel && !sel.__cheqHooked){
+        sel.addEventListener('change', function(){
+          setTimeout(function(){
+            if (typeof window.CHEQ.refreshBadge === 'function') window.CHEQ.refreshBadge();
+            if (typeof window.refreshChequeReminderUI === 'function') window.refreshChequeReminderUI();
+          }, 0);
+        });
+        sel.__cheqHooked = true;
+      }
+      var y = document.getElementById('yearInput');
+      if (y && !y.__cheqHooked){
+        y.addEventListener('change', function(){
+          setTimeout(function(){
+            if (typeof window.CHEQ.refreshBadge === 'function') window.CHEQ.refreshBadge();
+            if (typeof window.refreshChequeReminderUI === 'function') window.refreshChequeReminderUI();
+          }, 0);
+        });
+        y.__cheqHooked = true;
+      }
+      // Also observe global year/owner programmatic changes
+      var tryRefresh = function(){
+        try {
+          if (typeof window.CHEQ.refreshBadge === 'function') window.CHEQ.refreshBadge();
+          if (typeof window.refreshChequeReminderUI === 'function') window.refreshChequeReminderUI();
+        } catch(e){}
+      };
+      if (!window.__cheqPatchedSaveState && typeof window.saveState === 'function'){
+        var __oldSave = window.saveState;
+        window.saveState = function(){
+          var r = __oldSave.apply(this, arguments);
+          setTimeout(tryRefresh, 0);
+          return r;
+        };
+        window.__cheqPatchedSaveState = true;
+      }
+    } catch(e){}
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', hookRefreshers);
+  } else {
+    hookRefreshers();
+  }
+})();
+</script>
+
+
+<!-- === Cheque Reminder — YEAR LOCK (owner+year isolation & UI guard) === -->
+<script id="cheque-reminder-year-lock">
+(function(){
+  function slug(s){ return (s||'unknown').toString().trim().toLowerCase().replace(/[^a-z0-9]+/g,'-'); }
+  function getOwnerId(){
+    try{
+      if (typeof getSelectedOwnerId === 'function'){ const id = getSelectedOwnerId(); if (id) return slug(id); }
+      const sel = document.getElementById('ownerSelect'); if (sel && (sel.value||sel.selectedOptions?.[0]?.value)) return slug(sel.value||sel.selectedOptions[0].value);
+      const stored = localStorage.getItem('selectedOwnerId'); if (stored) return slug(stored);
+      const nameEl = document.getElementById('ownerNameDisplay'); if (nameEl?.textContent) return slug(nameEl.textContent);
+    }catch(e){}
+    return 'owner-unknown';
+  }
+  function getYear(){
+    try{
+      if (typeof getCurrentYear === 'function'){ const y = Number(getCurrentYear()); if (Number.isFinite(y)) return y; }
+      const yEl = document.getElementById('yearInput') || document.getElementById('yearSelect');
+      if (yEl?.value){ const n = parseInt(yEl.value,10); if (!isNaN(n)) return n; }
+      const fancy = document.getElementById('yearFancy'); if (fancy?.textContent){ const n = parseInt(fancy.textContent.replace(/[^\d]/g,''),10); if (!isNaN(n)) return n; }
+    }catch(e){}
+    return (new Date()).getFullYear();
+  }
+  function key(){ return "chequeReminder:" + getOwnerId() + ":" + getYear(); }
+  function readStrict(){
+    try{
+      // one-time migrate legacy generic key if present (to current scope only)
+      const legacy = localStorage.getItem("chequeReminder");
+      if (legacy && !localStorage.getItem(key())){
+        localStorage.setItem(key(), legacy);
+        localStorage.removeItem("chequeReminder");
+      }
+      const raw = localStorage.getItem(key());
+      if (!raw) return {};
+      const st = JSON.parse(raw);
+      if (st && st._owner === getOwnerId() && st._year === getYear()) return st;
+      return {}; // reject mismatched scope
+    }catch(e){ return {}; }
+  }
+  function writeStrict(st){
+    try{
+      const obj = Object.assign({}, st||{}, {_owner:getOwnerId(), _year:getYear()});
+      localStorage.setItem(key(), JSON.stringify(obj));
+    }catch(e){}
+  }
+  function clearTimers(){ try{
+    if (window.__cheqOneShot){ clearTimeout(window.__cheqOneShot); window.__cheqOneShot = null; }
+    if (window.__cheqRepeat){ clearInterval(window.__cheqRepeat); window.__cheqRepeat = null; }
+  }catch(e){} }
+
+  function refreshUI(){
+    const due = document.getElementById('cheqDueAt');
+    const setBtn = document.getElementById('cheqSetBtn');
+    const st = readStrict();
+    if (due) due.value = st.ts ? new Date(st.ts).toISOString().slice(0,16) : "";
+    if (setBtn){
+      if (st.ts && !st.done){
+        setBtn.classList.add('active');
+      }else{
+        setBtn.classList.remove('active'); clearTimers();
+      }
+    }
+  }
+
+  // Guard: keep the due field consistent with scoped storage
+  function guardDueField(){
+    const due = document.getElementById('cheqDueAt');
+    if (!due) return;
+    try{
+      if (due.__cheqGuarded) return;
+      const obs = new MutationObserver(()=>{
+        const st = readStrict();
+        const expect = st.ts ? new Date(st.ts).toISOString().slice(0,16) : "";
+        if (due.value !== expect){ due.value = expect; }
+      });
+      obs.observe(due, {attributes:true, attributeFilter:['value']});
+      due.addEventListener('change', ()=>{
+        // Save only to current scope
+        const ts = Date.parse(due.value);
+        if (Number.isFinite(ts)){ writeStrict({ ts, done:false }); refreshUI(); }
+      });
+      due.__cheqGuarded = true;
+    }catch(e){}
+  }
+
+  // Hook owner/year changes
+  function hookScopeChanges(){
+    const ownerSel = document.getElementById('ownerSelect');
+    const yearSel  = document.getElementById('yearInput') || document.getElementById('yearSelect');
+    function onScope(){ clearTimers(); refreshUI(); }
+    ownerSel && ownerSel.addEventListener('change', onScope);
+    yearSel  && yearSel.addEventListener('change',  onScope);
+    // Observe programmatic changes
+    try{
+      const t = ownerSel || document.getElementById('ownerNameDisplay') || document.body;
+      const mo = new MutationObserver(onScope);
+      mo.observe(t, {subtree:true, childList:true, characterData:true, attributes:true});
+    }catch(e){}
+  }
+
+  // Expose helpers for other scripts
+  window.__CHEQ_YEAR_LOCK__ = { key, readStrict, writeStrict, refreshUI };
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', ()=>{ hookScopeChanges(); guardDueField(); refreshUI(); });
+  }else{
+    hookScopeChanges(); guardDueField(); refreshUI();
+  }
+})();
+</script>
