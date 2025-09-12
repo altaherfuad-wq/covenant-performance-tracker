@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0061)file:///C:/Users/fuad/Downloads/index_cheque_reminder_v5.html -->
+<!-- saved from url=(0061)file:///C:/Users/fuad/Downloads/index_cheque_reminder_v4.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   
   <title>ENBD Performance Tracker — Enhanced 🌟</title>
@@ -30,20 +30,20 @@
 
 
 
-<link href="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/css2" rel="stylesheet">
-<link href="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/css2(1)" rel="stylesheet">
-<link href="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/css2(2)" rel="stylesheet">
-<link href="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/css2(3)" rel="stylesheet">
+<link href="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/css2" rel="stylesheet">
+<link href="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/css2(1)" rel="stylesheet">
+<link href="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/css2(2)" rel="stylesheet">
+<link href="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/css2(3)" rel="stylesheet">
 
 <meta content="width=device-width,initial-scale=1" name="viewport">
 <title>ENBD Performance Tracker</title>
 <!-- Chart.js -->
-<script src="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/chart.umd.min.js.download"></script>
+<script src="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/chart.umd.min.js.download"></script>
 <!-- XLSX for Excel export -->
-<script src="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/xlsx.full.min.js.download"></script>
+<script src="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/xlsx.full.min.js.download"></script>
 <!-- html2canvas + jsPDF -->
-<script src="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/html2canvas.min.js.download"></script>
-<script src="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/jspdf.umd.min.js.download"></script>
+<script src="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/html2canvas.min.js.download"></script>
+<script src="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/jspdf.umd.min.js.download"></script>
 <style class="next-needed-frame">
 
 /* --- Force "Next Year Target" line to right side --- */
@@ -3518,7 +3518,7 @@ canvas[id*="chart"], canvas[class*="chart"], canvas.chartjs-render-monitor {
   overflow: visible !important;
 }
 </style>
-<link href="./ENBD Performance Tracker — Enhanced 🌟Reminder_files/css2(4)" id="nyt-fonts" rel="stylesheet">
+<link href="./ENBD Performance Tracker — Enhanced 🌟GGUB_files/css2(4)" id="nyt-fonts" rel="stylesheet">
 <style id="nyt-special-style">
 .nyt-special{
   color:#000 !important;
@@ -4172,7 +4172,7 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 <span class="amount" id="nextBadgeAmount">2,440,000 (shortage 21,789,946)</span>
 <span class="days" id="nextBadgeDays">(-)</span>
 <div class="tiny muted smallDate">Local: <span id="localDate">1 Jan 2028, 00:00</span></div>
-<div class="tiny muted smallDate">Saved: <span id="savedAt" title="12/09/2025, 16:16:11">16:16:11</span></div>
+<div class="tiny muted smallDate">Saved: <span id="savedAt" title="12/09/2025, 15:45:37">15:45:37</span></div>
 <div class="controls smallControls">
 <button aria-label="Unlock editing" class="ghost small" id="monthlyLockToggle" title="Unlock to edit monthly fields">🔒 Lock</button>
 <button aria-label="Switch to light mode" class="ghost small" id="darkToggle">☀️</button>
@@ -4406,7 +4406,7 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 <div class="pill" id="nextMonthPill">Oct</div>
 <div>
 <div class="tiny muted">Next needed 🚀</div>
-<div class="big" id="nextText"><strong>2,440,000</strong> <span style="color:var(--orange-red-flag);">(shortage 21,789,946)</span></div><span id="cheque-reminder-anchor" class="cheque-reminder-wrap"><button class="cheq-btn" title="Set Cheque Deposit Reminder">🔔 Cheque</button><span id="cheqDueBadge" class="cheq-duebadge" title="Right‑click to delete reminder" style="display: inline-flex;"><span class="cheq-ring">🔔</span><span>12/09/2025</span><span>•</span><span>AED 2,000</span></span></span>
+<div class="big" id="nextText"><strong>2,440,000</strong> <span style="color:var(--orange-red-flag);">(shortage 21,789,946)</span></div><span id="cheque-reminder-anchor" class="cheque-reminder-wrap"><button class="cheq-btn" title="Set Cheque Deposit Reminder">🔔 Cheque</button><span id="cheqDueBadge" class="cheq-duebadge" style="display: inline-flex;"><span class="cheq-ring">🔔</span><span>12/09/2025</span><span>•</span><span>AED 3,354,548</span></span></span>
 </div>
 </div>
 <div style="text-align:right;">
@@ -21487,7 +21487,6 @@ document.addEventListener('DOMContentLoaded', function() {
   .cheque-reminder-wrap{display:inline-flex;align-items:center;gap:6px;margin-left:8px;position:relative;z-index:2147483646;pointer-events:auto}
   .cheq-btn{background:rgba(255,255,255,.9);backdrop-filter:saturate(120%) blur(2px);color:var(--accent,#2a8a7b);border:1px solid rgba(74,141,133,0.25);padding:6px 10px;border-radius:999px;font-size:12px;cursor:pointer;white-space:nowrap}
   .cheq-btn:hover{box-shadow:0 6px 16px rgba(74,141,133,.2);transform:translateY(-1px)}
-  .cheq-btn.danger{border-color:#e57373;color:#b71c1c;background:#fff5f5}
   .cheq-pop{position:fixed;z-index:2147483647;background:var(--card,#fff);border:1px solid rgba(0,0,0,.08);box-shadow:0 16px 38px rgba(10,40,80,.22);border-radius:12px;padding:12px;display:none;width:340px}
   .cheq-pop.visible{display:block}
   .cheq-row{display:grid;grid-template-columns:1fr;gap:8px;margin-top:6px}
@@ -21496,10 +21495,11 @@ document.addEventListener('DOMContentLoaded', function() {
   .cheq-actions{display:flex;gap:6px;justify-content:space-between;margin-top:6px;flex-wrap:wrap}
   .cheq-actions .cheq-btn{font-size:12px;padding:6px 10px}
   .cheq-amt{font-weight:700;color:var(--orange-red-flag,#d65);font-size:13px}
-  .cheq-duebadge{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,#fff6f6,#fff1f1);border:1px solid rgba(212,107,107,.25);font-size:11px;color:#a94442;user-select:none}
+  .cheq-duebadge{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,#fff6f6,#fff1f1);border:1px solid rgba(212,107,107,.25);font-size:11px;color:#a94442}
   .cheq-ring{font-size:14px}
-  .cheq-toast{position:fixed;top:80px;right:20px;z-index:2147483647;background:#0d9488;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 10px 26px rgba(0,0,0,.25);display:none}
+  .cheq-toast{position:fixed;top:80px;right:20px;z-index:2147483647;background:#ff9800;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 10px 26px rgba(0,0,0,.25);display:none}
   .cheq-toast.show{display:block}
+  /* Always-visible floating button (bottom-right) */
   .cheq-fab{position:fixed;right:18px;bottom:20px;z-index:2147483646;pointer-events:auto}
   .cheq-note{font-size:11px;color:#777}
   .cheq-row .cheq-toggle{display:flex;align-items:center;gap:8px;font-size:12px}
@@ -21516,7 +21516,6 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     load(){ try { return JSON.parse(localStorage.getItem(CHEQ.key())||'{}'); } catch(e){ return {}; } },
     save(obj){ try { localStorage.setItem(CHEQ.key(), JSON.stringify(obj||{})); } catch(e){} },
-    remove(){ try { localStorage.removeItem(CHEQ.key()); } catch(e){} },
     getNextNeededAmount(){
       try{
         if (typeof window.findNextNeededMonth === 'function'){
@@ -21556,12 +21555,9 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.className = 'cheq-btn'; btn.title = 'Set Cheque Deposit Reminder'; btn.textContent = '🔔 Cheque';
         const badge = document.createElement('span');
         badge.id = 'cheqDueBadge'; badge.className = 'cheq-duebadge'; badge.style.display = 'none';
-        badge.title = 'Right‑click to delete reminder';
         wrap.appendChild(btn); wrap.appendChild(badge);
         root.insertAdjacentElement('afterend', wrap);
         btn.addEventListener('click', ()=>CHEQ.open('anchor'));
-        // Right‑click delete on badge
-        badge.addEventListener('contextmenu', (e)=>{ e.preventDefault(); CHEQ.deleteAction(); });
       }
       if (!document.getElementById('cheqFab')){
         const fab = document.createElement('div');
@@ -21594,13 +21590,17 @@ document.addEventListener('DOMContentLoaded', function() {
               <label>Note (optional)</label>
               <input type="text" id="cheqNote" placeholder="e.g., Aug deposits at ENBD Mirdif"/>
             </div>
+            <div class="cheq-toggle">
+              <input type="checkbox" id="cheqNotifyToggle"/>
+              <label for="cheqNotifyToggle">Enable browser notifications (optional)</label>
+            </div>
+            <div class="cheq-note">Notifications show as desktop alerts when the page is open. For background alerts, we can add a PWA later.</div>
           </div>
           <div class="cheq-actions">
             <button class="cheq-btn" id="cheqSave">Save</button>
             <button class="cheq-btn" id="cheqDone">Done ✅</button>
             <button class="cheq-btn" id="cheqShare">Share</button>
             <button class="cheq-btn" id="cheqCopy">Copy</button>
-            <button class="cheq-btn danger" id="cheqDelete">Delete 🗑️</button>
           </div>
         `;
         document.body.appendChild(pop);
@@ -21613,7 +21613,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('cheqDone').addEventListener('click', CHEQ.markDone);
         document.getElementById('cheqShare').addEventListener('click', CHEQ.shareAction);
         document.getElementById('cheqCopy').addEventListener('click', CHEQ.copyAction);
-        document.getElementById('cheqDelete').addEventListener('click', CHEQ.deleteAction);
+        document.getElementById('cheqNotifyToggle').addEventListener('change', (e)=>{
+          if (e.target.checked){
+            if ('Notification' in window){
+              if (Notification.permission === 'granted'){ /* ready */ }
+              else if (Notification.permission === 'default'){
+                Notification.requestPermission().then((res)=>{
+                  if (res !== 'granted'){ e.target.checked = false; CHEQ.toast('Notifications blocked'); }
+                });
+              } else { e.target.checked = false; CHEQ.toast('Notifications blocked'); }
+            } else { e.target.checked = false; CHEQ.toast('Not supported'); }
+          }
+        });
       }
       CHEQ.prefill(); CHEQ.refreshBadge();
     },
@@ -21633,6 +21644,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       if (s.amount && amtEl){ amtEl.value = s.amount; }
       const noteEl = document.getElementById('cheqNote'); if (s.note && noteEl) noteEl.value = s.note;
+      // toggle state reflects permission
+      const tog = document.getElementById('cheqNotifyToggle');
+      if (tog && 'Notification' in window){ tog.checked = (Notification.permission === 'granted'); }
     },
     open(where){
       const pop = document.getElementById('cheqPop'); if (!pop) return;
@@ -21672,9 +21686,6 @@ document.addEventListener('DOMContentLoaded', function() {
       CHEQ.refreshBadge(); CHEQ.close(); CHEQ.toast('Cheque reminder saved.');
     },
     markDone(){ const s = CHEQ.load()||{}; s.done=true; s.completedAt=new Date().toISOString(); CHEQ.save(s); CHEQ.refreshBadge(); CHEQ.toast('Marked as done. Notifications stopped.'); CHEQ.close(); },
-    deleteAction(){
-      CHEQ.remove(); CHEQ.refreshBadge(); CHEQ.close(); CHEQ.toast('Cheque reminder deleted.');
-    },
     shareText(){ const s = CHEQ.load()||{}; const owner = (window.currentOwner || 'Owner'); const year = (typeof window.getSelectedYear === 'function')? window.getSelectedYear(): (new Date().getFullYear()); const dueStr = s.dueISO? CHEQ.dmy(new Date(s.dueISO)) : '(unset)'; const note = s.note? `\nNote: ${s.note}` : ''; return `Cheque deposit reminder — ${owner} — ${year}\nDue: ${dueStr}\nAmount: ${CHEQ.fmt(s.amount)}${note}`; },
     shareAction(){ const text = CHEQ.shareText(); if (navigator.share){ navigator.share({text}).catch(()=>{}); } else { window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener'); } },
     copyAction(){
@@ -21710,7 +21721,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<div id="nextTargetsWidget" class="ntw collapsed"><button type="button" class="ntw-toggle"><span class="dot"></span><span>Next Targets</span><span class="caret">▾</span></button><div class="ntw-panel"><div class="ntw-head"><div class="ntw-title">Next Targets</div><div class="ntw-meta" id="ntwMeta">7 items</div></div><div class="ntw-body" id="ntwBody"><div class="ntc-row"><span class="m">Jan</span><span class="lbl">&nbsp;target</span> (<span class="amt">3,600,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-3,354,548</span>)</div><div class="ntc-row"><span class="m">Feb</span><span class="lbl">&nbsp;target</span> (<span class="amt">2,049,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-5,092,894</span>)</div><div class="ntc-row"><span class="m">Apr</span><span class="lbl">&nbsp;target</span> (<span class="amt">3,357,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-5,523,956</span>)</div><div class="ntc-row"><span class="m">May</span><span class="lbl">&nbsp;target</span> (<span class="amt">3,267,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-8,051,252</span>)</div><div class="ntc-row"><span class="m">Jul</span><span class="lbl">&nbsp;target</span> (<span class="amt">16,319,552</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-20,979,590</span>)</div><div class="ntc-row"><span class="m">Oct</span><span class="lbl">&nbsp;target</span> (<span class="amt">2,440,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-21,789,946</span>)</div><div class="ntc-row"><span class="m">Nov</span><span class="lbl">&nbsp;target</span> (<span class="amt">5,555,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-27,344,946</span>)</div></div></div></div><div id="cheqFab" class="cheq-fab"><button class="cheq-btn">🔔 Cheque</button></div><div class="cheq-pop" id="cheqPop" style="left: 1059.38px; top: 348.8px;">
+<div id="nextTargetsWidget" class="ntw collapsed"><button type="button" class="ntw-toggle"><span class="dot"></span><span>Next Targets</span><span class="caret">▾</span></button><div class="ntw-panel"><div class="ntw-head"><div class="ntw-title">Next Targets</div><div class="ntw-meta" id="ntwMeta">7 items</div></div><div class="ntw-body" id="ntwBody"><div class="ntc-row"><span class="m">Jan</span><span class="lbl">&nbsp;target</span> (<span class="amt">3,600,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-3,354,548</span>)</div><div class="ntc-row"><span class="m">Feb</span><span class="lbl">&nbsp;target</span> (<span class="amt">2,049,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-5,092,894</span>)</div><div class="ntc-row"><span class="m">Apr</span><span class="lbl">&nbsp;target</span> (<span class="amt">3,357,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-5,523,956</span>)</div><div class="ntc-row"><span class="m">May</span><span class="lbl">&nbsp;target</span> (<span class="amt">3,267,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-8,051,252</span>)</div><div class="ntc-row"><span class="m">Jul</span><span class="lbl">&nbsp;target</span> (<span class="amt">16,319,552</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-20,979,590</span>)</div><div class="ntc-row"><span class="m">Oct</span><span class="lbl">&nbsp;target</span> (<span class="amt">2,440,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-21,789,946</span>)</div><div class="ntc-row"><span class="m">Nov</span><span class="lbl">&nbsp;target</span> (<span class="amt">5,555,000</span>)<span class="lbl">&nbsp;Balance</span> (<span class="acc neg">-27,344,946</span>)</div></div></div></div><div id="cheqFab" class="cheq-fab"><button class="cheq-btn">🔔 Cheque</button></div><div class="cheq-pop visible" id="cheqPop" style="left: 1059.38px; top: 348.8px;">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
             <strong>Cheque Reminder</strong>
             <button class="cheq-btn" id="cheqClose" aria-label="Close">✕</button>
@@ -21732,12 +21743,16 @@ document.addEventListener('DOMContentLoaded', function() {
               <label>Note (optional)</label>
               <input type="text" id="cheqNote" placeholder="e.g., Aug deposits at ENBD Mirdif">
             </div>
+            <div class="cheq-toggle">
+              <input type="checkbox" id="cheqNotifyToggle">
+              <label for="cheqNotifyToggle">Enable browser notifications (optional)</label>
+            </div>
+            <div class="cheq-note">Notifications show as desktop alerts when the page is open. For background alerts, we can add a PWA later.</div>
           </div>
           <div class="cheq-actions">
             <button class="cheq-btn" id="cheqSave">Save</button>
             <button class="cheq-btn" id="cheqDone">Done ✅</button>
             <button class="cheq-btn" id="cheqShare">Share</button>
             <button class="cheq-btn" id="cheqCopy">Copy</button>
-            <button class="cheq-btn danger" id="cheqDelete">Delete 🗑️</button>
           </div>
         </div><div id="cheqToast" class="cheq-toast">🔔 Cheque deposit due now</div></body></html>
