@@ -1079,13 +1079,16 @@ canvas#scn-chart,
   line-height: 1;
 }
 </style><style id="share-style-robust">
-/* Toolbar Share color (white) */
+/* Toolbar Share button: black background with white icon/text */
 #topToolbar #btnShare,
 #topToolbar .btn-share,
 #topToolbar [aria-label*="Share" i],
 #topToolbar [title*="Share" i] {
   color: #fff !important;
+  background: #000 !important;
   opacity: 1 !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.12) !important;
 }
 #topToolbar #btnShare svg,
 #topToolbar .btn-share svg,
@@ -1098,7 +1101,7 @@ canvas#scn-chart,
 /* Generic share menus: black background */
 .shareMenuWrapper, .shareMenu, .share-menu, .share-menu-wrapper,
 #shareActionPicker, #shareActionPicker > div,
-.popover-share, .menu-share {
+.popover-share, .menu-share, #shareDropdown {
   background: #000 !important;
   color: #fff !important;
   border: 1px solid rgba(255,255,255,0.2) !important;
@@ -1112,6 +1115,34 @@ canvas#scn-chart,
 .shareMenuWrapper .shareAction:hover, .shareMenu .shareAction:hover, .share-menu .shareAction:hover,
 #shareActionPicker .ghost:hover, .popover-share .shareAction:hover {
   background: rgba(255,255,255,0.08) !important;
+}
+
+/* Ensure top toolbar share icon uses currentColor (matches button text color) */
+#topToolbar #btnShare svg,
+#topToolbar .btn-share svg,
+#topToolbar [aria-label*="Share" i] svg,
+#topToolbar [title*="Share" i] svg {
+  fill: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* Force the top toolbar Share icon (SVG paths) and label to white */
+#topToolbar #btnShare, #topToolbar .btn-share, #topToolbar [aria-label*="Share" i], #topToolbar [title*="Share" i] {
+  color: #fff !important;
+}
+#topToolbar #btnShare svg *,
+#topToolbar .btn-share svg *,
+#topToolbar [aria-label*="Share" i] svg *,
+#topToolbar [title*="Share" i] svg * {
+  fill: #fff !important;
+  stroke: #fff !important;
+}
+
+/* Ensure Monthly Notes sharing buttons are white background with black text */
+#monthlyNotesModal .sharing-buttons .ghost {
+  color: #000 !important;
+  background: #fff !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
 }
 </style></head>
 <body class='\"dark\"'>
@@ -3030,10 +3061,39 @@ body.__exporting select {
 }
 .month-item { display: flex; flex-direction: column; align-items: center; width: 64px; }
 .month-item .month-pill { width: 100%; }
-.acc-var-label { display: block; text-align: center; font-size: 11px; margin-top: 4px; line-height: 1.1; }
+.acc-var-label { display: block; text-align: center; font-size: 13px; margin-top: 4px; line-height: 1.1; }
 .acc-var-label.acc-neg { color: var(--orange-red-flag, #c0392b); }
 .acc-var-label.acc-pos { color: var(--green, #2e7d32); }
 .acc-var-label.acc-zero{ color: var(--muted, #6c757d); }
+
+/* === Patch: Project column small font & Key Dates color === */
+:root { --keydate-color: #1e90ff; }
+
+/* Make Project column text smaller and slightly muted */
+th.projectCol, td.project, td.project.editable {
+  font-size: 12px !important;
+  color: var(--muted) !important;
+}
+
+/* Make key dates visually distinct (uses data-tip-label attribute when present) */
+td[data-tip-label="Key Dates"], td.gray[data-tip-label="Key Dates"] {
+  color: var(--keydate-color) !important;
+  font-weight: normal !important;
+}
+
+/* Also color standalone keyDates inside cells if rendered as spans */
+td[data-tip-label="Key Dates"] span, td[data-tip-label="Key Dates"] .key-date {
+  color: var(--keydate-color) !important;
+}
+
+/* === Force exact red for negative variance & balance === */
+/* Ensure table variance cells and external balance labels use pure red */
+.variance-neg, td.variance-neg, .accum-neg, td.accum-neg, .acc-var-label.acc-neg, .month-pill.unmet {
+  color: #ff0000 !important;
+}
+
+/* Slightly stronger border hint for unmet month pills */
+.month-pill.unmet { border-color: rgba(255,0,0,0.12) !important; }
 
 
 /* removed old margin rule */
@@ -3683,6 +3743,13 @@ body.dark .shareMenuWrapper .shareAction:hover { background: rgba(255,255,255,0.
 
 /* === Month quick-share (icon + popover) [AUTO-INSERTED] === */
 .month-pill{position:relative;}
+
+/* Ensure labels inside month pills (Target/Bank) keep neutral/muted color
+  even if the pill gets a colored class like .unmet/.met */
+.month-pill .kv .label { color: var(--muted) !important; font-weight: 500; }
+
+/* Make the 'Bank' label green in the month pills */
+.label-bank { color: var(--green) !important; font-weight: 600; }
 .month-share-icon{
   position:absolute;top:4px;right:4px;font-size: 13px;line-height:1;
   opacity:.55;cursor:pointer;user-select:none;
@@ -5522,7 +5589,7 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 <div class="big" id="nextDays"></div>
 </div>
 </div>
-<div aria-label="Monthly progress overview" class="months-mini" id="monthsMini"></div>
+
 </div>
 </div>
 <div class="card" id="chartCard">
@@ -5542,6 +5609,10 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 <canvas aria-label="Monthly performance chart" id="performanceChart"></canvas>
 </div>
 </div>
+</div>
+
+<div class="card" id="monthlyPillsSection" style="margin-top:10px; padding:10px;">
+  <div aria-label="Monthly progress overview" class="months-mini" id="monthsMini"></div>
 </div>
 <div class="card" id="generalNotesCard" style="margin-top:8px; padding:12px;">
 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
@@ -5659,13 +5730,7 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 <div style="max-height:60vh; overflow-y:auto;">
 <pre id="aiAnalysisContent"></pre>
 </div>
-<div class="sharing-buttons">
-<button aria-label="Copy AI Analysis to Clipboard" class="ghost" id="copyAIAnalysisBtn" title="Copy to clipboard">Copy</button>
-<button aria-label="Share AI Analysis via WhatsApp" class="ghost" id="shareWhatsAppBtn" title="Share via WhatsApp">WhatsApp</button>
-<button aria-label="Share AI Analysis via Email" class="ghost" id="shareEmailBtn" title="Share via email">Email</button>
-<button aria-label="Export AI Analysis" class="ghost" id="exportAIAnalysisBtn">Export</button>
-<button aria-label="Close AI Analysis" class="ghost" id="closeAIAnalysisBtn">Close</button>
-</div>
+<!-- sharing-buttons for AI Analysis removed as requested -->
 <!-- Optional quick note for sharing -->
 <div class="sharing-note" style="display:flex; gap:8px; align-items:center; justify-content:center; margin-top:8px;">
 <input id="shareOptionalNote" placeholder="Optional note 1 (e.g., summary)" style="width:33%; padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); font-size: 14px;"/>
@@ -5787,9 +5852,9 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 <!-- Notes grid is scrollable to ensure copy/export/close buttons remain visible. -->
 <div id="notesGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;max-height:60vh;overflow-y:auto;"></div>
 <div class="sharing-buttons" style="margin-top: 29mm;">
-<button class="ghost" id="notesCopy">Copy</button>
-<button class="ghost" id="notesExport">Export</button>
-<button class="ghost" id="notesClose">Close</button>
+<button class="ghost" id="notesCopy" style="color: #fff; background: #000; border: 1px solid rgba(255,255,255,0.06);">Copy</button>
+<button class="ghost" id="notesExport" style="color: #fff; background: #000; border: 1px solid rgba(255,255,255,0.06);">Export</button>
+<button class="ghost" id="notesClose" style="color: #fff; background: #000; border: 1px solid rgba(255,255,255,0.06);">Close</button>
 </div>
 </div>
 </div>
@@ -6349,12 +6414,38 @@ function renderMonthsMini() {
     pill.setAttribute('data-month-index', i);
     pill.title = months[i];
     pill.innerHTML = `
-      <div class="tiny muted" style="font-size: 11px; margin-bottom:2px;">${i + 1}</div>
-      <div style="font-weight:700">${months[i].slice(0, 3)}</div>
-      <div class="tiny muted" style="margin-top: 6px;">${formatNumber(actual)}</div>
-    `;
+      <div class="stack">
+        <div class="title">${months[i].slice(0, 3)}</div>
+        <div class="kv"><span class="label">Target</span><span class="value val-target">${
+          (function(){
+            var rawT = monthlyTargets[i];
+            var t = (rawT==null || rawT===undefined || isNaN(Number(rawT))) ? 0 : Number(rawT);
+            return (t===0) ? '0' : (typeof formatNumber==='function' ? formatNumber(t) : String(t));
+          })()
+        }</span></div>
+        <div class="kv"><span class="label">Bank</span><span class="value val-bank">${
+          (function(){
+            var rawA = actuals[i];
+            var a = (rawA==null || rawA===undefined || isNaN(Number(rawA))) ? 0 : Number(rawA);
+            return (a===0) ? '0' : (typeof formatNumber==='function' ? formatNumber(a) : String(a));
+          })()
+        }</span></div>
+        <div class="kv"><span class="label">Balance</span><span class="value val-balance">${
+          (function(){
+            var bf = Number(owners[currentOwner].broughtForward || 0);
+            var s = bf;
+            for (var k=0;k<=i;k++){ 
+              var ra = actuals[k]; var a = (ra==null||isNaN(Number(ra)))?0:Number(ra);
+              var rt = monthlyTargets[k]; var t = (rt==null||isNaN(Number(rt)))?0:Number(rt);
+              s += a - t; 
+            }
+            return (s===0) ? '0' : (typeof formatNumber==='function' ? formatNumber(s) : String(s));
+          })()
+        }</span></div>
+      </div>
 
-    // External Acc. Variance label (OUTSIDE the pill)
+    `;
+// External Acc. Variance label (OUTSIDE the pill)
     let accVar = 0;
     for (let k = 0; k <= i; k++) {
       accVar += (Number(actuals[k] || 0) - Number(monthlyTargets[k] || 0));
@@ -17828,9 +17919,9 @@ var cls = (acc>0) ? 'met' : (acc<0) ? 'unmet' : 'equal';
       html.push(
         '<div class="month-pill '+cls+'" data-month="'+(i+1)+'">'+
           '<div>'+monthName(i)+'</div>'+
-          '<div>'+ (target ? ('Target: '+fmt(target)) : 'Target: —') +'</div>'+
-          '<div>'+ (actual ? ('Bank: '+fmt(actual)) : 'Bank: —') +'</div>'+
-          '<div class="acc-var-label tiny">'+accLabel+'</div>'+
+          '<div>'+ (target ? ('Target: '+fmt(target)) : 'Target: No') +'</div>'+
+          '<div>'+ ((i===0) ? '<span class="label-bank" style="color:var(--green) !important;">Bank:</span>' : '<span class="label-bank">Bank:</span>') +' <span style="color:var(--green) !important;">'+ (actual ? fmt(actual) : 'No') +'</span></div>'+
+          '<div class="acc-var-label">'+accLabel+'</div>'+
         '</div>'
       );
     }
@@ -19013,14 +19104,10 @@ var idxTarget = findHeaderIndex([/target|needed|req/i]);
       // Build pill content with custom colors - only show Bank Inflow if there's a value
       var pillContent = '<div class="month-pill '+cls+'" data-month="'+i+'" title="'+fullName+'">'+
         '<div style="color: navy; font-weight: bold;">'+shortName+'</div>'+
-        '<div style="color: red;">'+ (target ? ('Target: '+localFmt(target)) : 'Target: —') +'</div>';
+        '<div style="color: red;">'+ (target ? ('Target: '+localFmt(target)) : 'Target: No') +'</div>'+
+  '<div><span class="label-bank">Bank:</span> <span style="color:var(--green) !important;">'+ (actual ? localFmt(actual) : 'No') +'</span></div>';
       
-      // Only add Bank Inflow line if there's a value
-      if (actual && actual > 0) {
-        pillContent += '<div>Bank: '+localFmt(actual)+'</div>';
-      }
-      
-      pillContent += '<div class="acc-var-label tiny" style="color: orange;">'+accLabel+'</div>'+
+  pillContent += '<div class="acc-var-label" style="color: orange;">'+accLabel+'</div>'+
         '</div>';
 
       pills.push(pillContent);
@@ -20643,6 +20730,22 @@ document.addEventListener("DOMContentLoaded", function() {
   obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
   // Also re-apply on visibility changes (if SPA code rerenders)
   document.addEventListener('visibilitychange', ensureDark);
+})();
+</script>
+<script>
+// Runtime verification helper: re-run renderer and report first pill content
+(function(){
+  try{
+    if (typeof window.renderMonthsMini === 'function') { window.renderMonthsMini(); console.log('[verify] renderMonthsMini() invoked'); }
+    setTimeout(function(){
+      var first = document.querySelector('.month-pill');
+      if (first) {
+        var txt = first.textContent || first.innerText || '';
+        console.log('[verify] first pill text:', txt.trim());
+        try{ if (typeof showToast === 'function') showToast('Verify: first pill -> '+ (txt.trim().slice(0,40)), 'info'); }catch(_){ }
+      } else console.log('[verify] no .month-pill found');
+    }, 200);
+  }catch(e){ console.error(e); }
 })();
 </script>
 </body>
@@ -22906,12 +23009,93 @@ document.addEventListener("DOMContentLoaded", function() {
       if (!btn) return;
       // Remove accent/green classes and inline fills
       ['accent','success','green','primary'].forEach(function(c){ try{ btn.classList.remove(c); }catch(_){} });
-      btn.style.color = 'var(--text)';
-      // normalize icon colors
+  // Force toolbar share button text/icon color to white (use !important for robustness)
+  try{ btn.style.setProperty('color', '#fff', 'important'); }catch(_){ btn.style.color = '#fff'; }
+  // Ensure the share button is appended to the end of the top toolbar so it appears last
+  try{ var tbEl = document.getElementById('topToolbar'); if (tbEl && btn.parentNode !== tbEl) tbEl.appendChild(btn); }catch(_){ }
+      // normalize icon colors and force white fills/strokes
       btn.querySelectorAll('svg').forEach(function(svg){
-        svg.style.fill = 'currentColor';
-        svg.style.stroke = 'currentColor';
+        try{
+          svg.style.setProperty('fill', '#fff', 'important');
+          svg.style.setProperty('stroke', '#fff', 'important');
+          svg.style.setProperty('color', '#fff', 'important');
+        }catch(_){
+          svg.style.fill = '#fff';
+          svg.style.stroke = '#fff';
+          svg.style.color = '#fff';
+        }
       });
+
+      // Ensure a visible tiny white icon exists and make the button icon-only
+      (function ensureIcon(){
+        try{
+          if (!btn) return;
+          var hasSVG = !!btn.querySelector('svg');
+          var img = btn.querySelector('img');
+          // Tiny 12x12 share SVG (uses currentColor so it follows button color)
+          var svgMarkup = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="12" height="12" style="vertical-align:middle; margin:0; display:inline-block;" aria-hidden="true">\n  <path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>\n  <polyline points="16 6 12 2 8 6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></polyline>\n  <line x1="12" y1="2" x2="12" y2="15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></line>\n</svg>';
+          if (img){
+            // replace image with inline svg
+            try{ img.insertAdjacentHTML('afterend', svgMarkup); img.parentNode && img.parentNode.removeChild(img); }catch(_){ }
+          } else if (!hasSVG){
+            // remove any background-image so it doesn't obscure our svg
+            try{ btn.style.setProperty('background-image', 'none', 'important'); }catch(_){ btn.style.backgroundImage = 'none'; }
+            // insert svg at start
+            try{ btn.insertAdjacentHTML('afterbegin', svgMarkup); }catch(_){ }
+          }
+
+          // Make the button oval and shrink so it appears icon-only: padding horizontally, fixed height, centered icon
+          try{
+            btn.style.setProperty('padding', '6px 10px', 'important');
+            btn.style.setProperty('min-width', 'auto', 'important');
+            btn.style.setProperty('height', '32px', 'important');
+            btn.style.setProperty('display', 'inline-flex', 'important');
+            btn.style.setProperty('align-items', 'center', 'important');
+            btn.style.setProperty('justify-content', 'center', 'important');
+            btn.style.setProperty('border-radius', '999px', 'important');
+            btn.style.setProperty('box-sizing', 'border-box', 'important');
+            btn.style.setProperty('gap', '4px', 'important');
+          }catch(_){
+            try{ btn.style.padding='6px 10px'; btn.style.height='32px'; btn.style.display='inline-flex'; btn.style.alignItems='center'; btn.style.justifyContent='center'; btn.style.borderRadius='999px'; btn.style.boxSizing='border-box'; btn.style.gap='4px'; }catch(_){ }
+          }
+
+          // Ensure injected svgs use currentColor so they follow button color; make them tiny and remove margins
+          btn.querySelectorAll('svg').forEach(function(s){
+            try{
+              s.setAttribute('width','12'); s.setAttribute('height','12');
+              s.style.setProperty('fill', 'none', 'important');
+              s.style.setProperty('stroke', 'currentColor', 'important');
+              s.style.setProperty('color', '#fff', 'important');
+              s.style.setProperty('margin', '0', 'important');
+              s.style.setProperty('vertical-align', 'middle', 'important');
+              s.style.setProperty('display', 'inline-block', 'important');
+              s.setAttribute('aria-hidden','true');
+            }catch(_){
+              try{ s.style.stroke='currentColor'; s.style.color='#fff'; s.style.margin=0; s.width=12; s.height=12; }catch(_){ }
+            }
+          });
+
+          // Remove textual labels and hide non-essential child elements so only the icon (and optional caret) remain
+          Array.from(btn.childNodes).forEach(function(node){
+            try{
+              if (node.nodeType === 3){ // text node
+                if ((node.textContent||'').trim()) node.textContent = '';
+              } else if (node.nodeType === 1){ // element
+                var tn = node.tagName.toLowerCase();
+                var isSvg = tn === 'svg';
+                var isCaret = (tn === 'span' || tn === 'i') && (/▾|▴|▼|▲|▾/.test((node.textContent||'').trim()));
+                if (!isSvg && !isCaret){
+                  node.style.display = 'none';
+                } else if (isCaret){
+                  // keep caret but make it small
+                  node.style.fontSize = '10px';
+                  node.style.marginLeft = '4px';
+                }
+              }
+            }catch(_){ }
+          });
+        }catch(_){ }
+      })();
       btn.dataset.role = btn.dataset.role || 'toolbar-share';
       // When clicked, re-style any resulting popover to black
       btn.addEventListener('click', function(){
@@ -22952,8 +23136,23 @@ document.addEventListener("DOMContentLoaded", function() {
     if (window.MutationObserver){
       var mo1 = new MutationObserver(normalizeShare);
       var mo2 = new MutationObserver(styleOpenMenus);
-      mo1.observe(document.getElementById('topToolbar')||document.documentElement, {childList:true, subtree:true});
-      mo2.observe(document.documentElement, {childList:true, subtree:true});
+      // Observe only the topToolbar subtree (if present) to avoid scanning whole document
+      var _tbNode = document.getElementById('topToolbar');
+      try{
+        if (_tbNode) {
+          mo1.observe(_tbNode, {childList:true, subtree:true});
+          // disconnect mo1 after a short grace period to avoid long-lived heavy observers
+          try{ _tbNode._shareObserver = mo1; setTimeout(function(){ try{ mo1.disconnect(); }catch(_){ } }, 3000); }catch(_){ }
+        } else {
+          mo1.observe(document.documentElement, {childList:true, subtree:false});
+          try{ setTimeout(function(){ try{ mo1.disconnect(); }catch(_){ } }, 3000); }catch(_){ }
+        }
+      }catch(_){ }
+      try{
+        // styleOpenMenus needs to know when popovers appear anywhere; observe document root but not deep subtree
+        mo2.observe(document.documentElement, {childList:true, subtree:false});
+        try{ setTimeout(function(){ try{ mo2.disconnect(); }catch(_){ } }, 3000); }catch(_){ }
+      }catch(_){ }
     }
     // Safety retries
     setTimeout(normalizeShare, 200);
@@ -22963,7 +23162,351 @@ document.addEventListener("DOMContentLoaded", function() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
-</script></body>
+</script>
+<style id="gn-share-black-2025-09-15">
+/* === General Notes share popover — black theme === */
+.gn-share-wrap { position:absolute !important; right:0px; top:0px; z-index:2147483000; display:inline-flex; align-items:center; gap:6px; }
+.gn-share-btn { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:6px; background:#000; color:#fff; border:1px solid rgba(255,255,255,0.25); font-size:12px; line-height:1; cursor:pointer; user-select:none; box-shadow:0 6px 16px rgba(0,0,0,0.35); padding:0; }
+.gn-share-btn .caret { font-size: 12px; margin-left: 2px; opacity: .9; }
+
+/* Fixed-position popover so it never gets clipped by parents */
+.gn-pop { position:fixed; z-index:2147483647; display:none; min-width:220px; max-width:360px; padding:10px 12px; border-radius:12px; background:#000; color:#fff; border:1px solid rgba(255,255,255,0.25); box-shadow:0 16px 36px rgba(0,0,0,0.6); }
+.gn-pop h4 { margin: 0 0 8px 0; font-size: 14px; font-weight: 700; color: #fff; }
+.gn-row { display: grid; grid-template-columns: 1fr; gap: 8px; }
+.gn-act {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 10px; width: 100%;
+  background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.18);
+  font-size: 13px; cursor: pointer; text-align: left;
+}
+.gn-act:hover { background: rgba(255,255,255,0.12); }
+.gn-act .icon { width: 18px; display: inline-block; text-align: center; }
+.gn-tip { margin-top: 6px; font-size: 12px; opacity: .8; }
+.gn-hide { display: none !important; }
+</style>
+
+
+<script id="gn-share-2025-09-15">
+(function(){
+  if (window.__GN_SHARE_INSTALLED__) return; 
+  window.__GN_SHARE_INSTALLED__ = true;
+
+  function txt(el){ return (el ? (el.textContent||"").trim() : ""); }
+  function val(el){ return (el ? (el.value||"").trim() : ""); }
+
+  function getOwner(){
+    var owner = txt(document.getElementById('ownerNameDisplay'));
+    if (!owner){
+      var sel = document.getElementById('ownerSelect');
+      if (sel){
+        try{
+          var i = sel.selectedIndex; 
+          owner = (i >= 0 && sel.options[i]) ? (sel.options[i].text || sel.value) : sel.value;
+        }catch(_){ owner = val(sel); }
+      }
+    }
+    return owner || (window.currentOwner && window.owners && window.owners[window.currentOwner] && (window.owners[window.currentOwner].name || window.currentOwner)) || "Owner";
+  }
+
+  function getYear(){
+    var y = txt(document.getElementById('yearFancy')) || val(document.getElementById('yearInput'));
+    y = (y || "").replace(/\D+/g,"");
+    return y || String(new Date().getFullYear());
+  }
+
+  function getGeneralNotesText(){
+    var el = document.getElementById('generalNotes');
+    if (!el) {
+      // try common fallbacks
+      el = document.querySelector('#generalNotesCard textarea, #generalNotesCard [contenteditable="true"], #generalNotesCard .notes, textarea#notes, .general-notes textarea, .general-notes');
+    }
+    if (!el) return "";
+    // textarea / input vs div
+    var t = ("value" in el) ? el.value : (el.innerText || el.textContent || "");
+    // tidy whitespace
+    return t.replace(/\u00A0/g,' ').replace(/\s+\n/g,'\n').trim();
+  }
+
+  function buildMessage(){
+    var owner = getOwner();
+    var year = getYear();
+    var notes = getGeneralNotesText();
+    var header = "📒 General Notes — " + owner + " — " + year;
+    var body = notes ? notes : "(empty)";
+    return header + "\\n\\n" + body;
+  }
+
+  function encodeWA(text){
+    return encodeURIComponent(text).replace(/%0A/g, '%0A');
+  }
+
+  function positionPop(pop, anchorBtn){
+    if (!pop || !anchorBtn) return;
+    // move to body to avoid clipping
+    if (pop.parentElement !== document.body) document.body.appendChild(pop);
+    var r = anchorBtn.getBoundingClientRect();
+    var left = r.left + r.width/2;
+    var top  = r.bottom + 8;
+    pop.style.left = left + "px";
+    pop.style.top  = top + "px";
+    pop.style.transform = "translateX(-50%)";
+    pop.style.display = "block";
+  }
+
+  function hidePop(pop){
+    if (pop) pop.style.display = "none";
+  }
+
+  function ensureGNShare(){
+    try{
+      var card = document.getElementById('generalNotesCard');
+      if (!card) {
+        // try locate by visible text "General Notes"
+        var xp = document.evaluate('//*/text()[contains(normalize-space(.), "General Notes")]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+        var node = xp && xp.singleNodeValue ? xp.singleNodeValue.parentNode : null;
+        while (node && node !== document.body && !node.id) node = node.parentElement;
+        if (node) card = node;
+      }
+      if (!card) return;
+
+      // find a header row inside the card (first child block)
+      var header = card.querySelector(':scope > .row, :scope > header, :scope > div, :scope > .card-header') || card;
+      if (!header) header = card;
+
+      try{ if (getComputedStyle(header).position === "static") { header.style.position = "relative"; } }catch(_){} // avoid duplicates
+      if (header.querySelector('.gn-share-wrap')) return;
+
+      // create button
+      var wrap = document.createElement('span');
+      wrap.className = 'gn-share-wrap';
+      wrap.innerHTML = '<button type="button" class="gn-share-btn" aria-label="Share general notes" title="Share general notes">▾</button>';
+      header.appendChild(wrap);
+
+      // create popover
+      var pop = document.createElement('div');
+      pop.className = 'gn-pop';
+      pop.innerHTML = ''
+        + '<h4>Share General Notes</h4>'
+        + '<div class="gn-row">'
+        + '  <button type="button" class="gn-act gn-wa" data-act="wa"><span class="icon">🟢</span><span>Share to WhatsApp</span></button>'
+        + '  <button type="button" class="gn-act gn-copy" data-act="copy"><span class="icon">📋</span><span>Copy text</span></button>'
+        + '</div>'
+        + '<div class="gn-tip">Black pop-up • White text • Closes on outside click</div>';
+
+      // wire toggle
+      var btn = wrap.querySelector('.gn-share-btn');
+      btn.addEventListener('click', function(ev){
+        ev.stopPropagation();
+        if (pop.style.display === 'block') { hidePop(pop); }
+        else { positionPop(pop, btn); }
+      });
+
+      // wire actions
+      pop.querySelectorAll('.gn-act').forEach(function(a){
+        a.addEventListener('click', async function(){
+          hidePop(pop);
+          var msg = buildMessage();
+          var act = this.getAttribute('data-act');
+          if (act === 'wa'){
+            var url = 'https://wa.me/?text=' + encodeWA(msg);
+            try{ window.open(url, '_blank', 'noopener'); }catch(_){ location.href = url; }
+          } else if (act === 'copy'){
+            try{
+              if (navigator.clipboard && navigator.clipboard.writeText){
+                await navigator.clipboard.writeText(msg);
+              } else {
+                // fallback
+                var ta = document.createElement('textarea');
+                ta.value = msg; document.body.appendChild(ta); ta.select();
+                document.execCommand('copy'); ta.remove();
+              }
+              alert('General Notes copied.');
+            }catch(_){}
+          }
+        });
+      });
+
+      // close on outside click / esc
+      document.addEventListener('click', function(){ hidePop(pop); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape') hidePop(pop); });
+
+      // attach to body initially (fixed layer)
+      document.body.appendChild(pop);
+    }catch(_){}
+  }
+
+  // Run once DOM is ready, and observe for re-renders
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', ensureGNShare);
+  } else { ensureGNShare(); }
+
+  if (window.MutationObserver){
+    var mo = new MutationObserver(ensureGNShare);
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+  }
+})();
+</script>
+
+
+
+
+
+
+
+
+<style id="months-independent-static-2025-09-15">
+#monthlyPillsSection { }
+#monthlyPillsSection .months-mini {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(160px, 1fr));
+  gap: 10px;
+}
+@media (max-width: 1400px) {
+  #monthlyPillsSection .months-mini { grid-template-columns: repeat(5, minmax(160px, 1fr)); }
+}
+@media (max-width: 1200px) {
+  #monthlyPillsSection .months-mini { grid-template-columns: repeat(4, minmax(160px, 1fr)); }
+}
+@media (max-width: 900px) {
+  #monthlyPillsSection .months-mini { grid-template-columns: repeat(3, minmax(150px, 1fr)); }
+}
+@media (max-width: 700px) {
+  #monthlyPillsSection .months-mini { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+}
+</style>
+
+
+<style id="month-pills-3fields-2025-09-15">
+#monthlyPillsSection .month-pill .stack { display:grid; grid-template-columns: 1fr; gap:6px; }
+#monthlyPillsSection .month-pill .title { font-weight:700; font-size:13px; margin-bottom:2px; }
+#monthlyPillsSection .month-pill .kv { display:flex; align-items:center; justify-content:space-between; font-size:13px; }
+#monthlyPillsSection .month-pill .kv .label { opacity:.85; }
+#monthlyPillsSection .month-pill .kv .value { font-weight:700; }
+#monthlyPillsSection .month-pill .kv .value.val-target { color: var(--red, #ef4444); }
+#monthlyPillsSection .month-pill .kv .value.val-bank { color: var(--green, #16a34a); }
+#monthlyPillsSection .month-pill .kv .value.val-balance { color: var(--orange, #e3b04b); }
+</style>
+
+
+
+
+
+<style id="pill-colors-hardening-2025-09-15">
+/* Hard color overrides so Bank is always green, Target red, Balance orange */
+#monthlyPillsSection .month-pill .kv .value.val-bank { color:#16a34a !important; }  /* green */
+#monthlyPillsSection .month-pill .kv .value.val-target { color:#ef4444 !important; } /* red */
+#monthlyPillsSection .month-pill .kv .value.val-balance { color:#e3b04b !important; } /* orange */
+</style>
+
+
+
+
+
+<style id="pill-colors-hardening-2025-09-15-v3">
+#monthlyPillsSection .month-pill .kv .value.val-bank { color:#16a34a !important; }
+#monthlyPillsSection .month-pill .kv .value.val-target { color:#ef4444 !important; }
+#monthlyPillsSection .month-pill .kv .value.val-balance { color:#e3b04b !important; }
+</style>
+
+
+
+
+
+
+
+
+<script id="pill-final-normalizer-2025-09-15">
+(function(){
+  if (window.__PILL_FINAL_NORMALIZER__) return; window.__PILL_FINAL_NORMALIZER__=true;
+
+  function fmt(n){ try{ return (typeof formatNumber==='function') ? formatNumber(n) : String(n); }catch(_){ return String(n); } }
+
+  function normalizeOnce(){
+    var section = document.getElementById('monthlyPillsSection') || document;
+    var pills = section.querySelectorAll('.month-pill');
+    if (!pills.length) return;
+    pills.forEach(function(p){
+      var idx = Number(p.getAttribute('data-index'));
+      if (isNaN(idx)) return;
+      // Values from data arrays
+      var tRaw = (window.monthlyTargets||[])[idx];
+      var aRaw = (window.actuals||[])[idx];
+      var tNum = (tRaw==null || isNaN(Number(tRaw))) ? null : Number(tRaw);
+      var aNum = (aRaw==null || isNaN(Number(aRaw))) ? 0 : Number(aRaw); // bank 0 if missing
+      // Target: "NO Target" when null/undefined/NaN, else the number (including 0 if it's a real 0)
+      var tEl = p.querySelector('.value.val-target') || p.querySelector('.kv:nth-of-type(2) span:last-child');
+      if (tEl){
+        if (tNum===null){
+          tEl.textContent = 'NO Target';
+        } else {
+          tEl.textContent = (tNum===0) ? '0' : fmt(tNum);
+        }
+        try{ tEl.classList.add('val-target','value'); tEl.style.setProperty('color','#ef4444','important'); }catch(_){}
+      }
+      // Bank: always numeric (0 if missing) and always green
+      var bEl = p.querySelector('.value.val-bank') || p.querySelector('.kv:nth-of-type(3) span:last-child');
+      if (bEl){
+        bEl.textContent = (aNum===0) ? '0' : fmt(aNum);
+        try{ bEl.classList.add('val-bank','value'); bEl.style.setProperty('color','#16a34a','important'); }catch(_){}
+      }
+      // Balance: recompute using BF + Σ(Actual−Target) up to idx, keep orange
+      var balEl = p.querySelector('.value.val-balance') || p.querySelector('.kv:nth-of-type(4) span:last-child');
+      if (balEl){
+        var bf = Number((window.owners && window.owners[window.currentOwner] && window.owners[window.currentOwner].broughtForward) || 0);
+        var s = bf;
+        for (var k=0;k<=idx;k++){
+          var ak = Number(((window.actuals||[])[k]) || 0);
+          var tkRaw = (window.monthlyTargets||[])[k];
+          var tk = (tkRaw==null || isNaN(Number(tkRaw))) ? 0 : Number(tkRaw);
+          s += ak - tk;
+        }
+        balEl.textContent = (s===0) ? '0' : fmt(s);
+        try{ balEl.classList.add('val-balance','value'); balEl.style.setProperty('color','#e3b04b','important'); }catch(_){}
+      }
+    });
+  }
+
+  function normalize(){
+    normalizeOnce();
+    setTimeout(normalizeOnce, 80);
+    setTimeout(normalizeOnce, 250);
+    setTimeout(normalizeOnce, 600);
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', normalize);
+    window.addEventListener('load', normalize);
+  } else {
+    normalize();
+  }
+
+  if (window.MutationObserver){
+    var mo = new MutationObserver(function(){ normalizeOnce(); });
+    mo.observe(document.getElementById('monthlyPillsSection')||document.body, {childList:true, subtree:true});
+  }
+})();
+</script>
+
+
+<style id="no-bold-columns-2025-09-15">
+/* Remove ALL bold styling inside column/table/pills areas */
+.tableCard, .group-outline-table, .months-mini, #monthlyPillsSection,
+.kpi-strip, .kpi-item, .monthCol, .notesCol, .projectCol, .smallCol, .tinyCol {
+  font-weight: 400 !important;
+}
+/* Neutralize specific bold elements within those areas */
+.tableCard b, .tableCard strong, .tableCard .kpi-value, .tableCard .kpi-label,
+.group-outline-table b, .group-outline-table strong, .group-outline-table .kpi-value, .group-outline-table .kpi-label,
+#monthlyPillsSection b, #monthlyPillsSection strong, #monthlyPillsSection .month-pill .title,
+#monthlyPillsSection .month-pill .kv .value, #monthlyPillsSection .month-pill .kv span,
+.months-mini b, .months-mini strong, .months-mini .kpi-value, .months-mini .kpi-label,
+.kpi-strip b, .kpi-strip strong, .kpi-item b, .kpi-item strong,
+.monthCol *, .notesCol *, .projectCol *, .smallCol *, .tinyCol * {
+  font-weight: 400 !important;
+}
+</style>
+
+</body>
 </html>
 <!-- === Cheque Reminder: HARD ISOLATION PATCH (owner + year) === -->
 <script id="cheq-hard-isolation-patch">
