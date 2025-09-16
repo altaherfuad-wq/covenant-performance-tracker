@@ -1144,6 +1144,93 @@ canvas#scn-chart,
   background: #fff !important;
   border: 1px solid rgba(0,0,0,0.06) !important;
 }
+</style>
+<style id="upper-ribbon-share-fix">
+  /* Make small share arrows and share-icon in the upper ribbon visible (black) */
+  #odc-ribbon-container .note-share,
+  #odc-ribbon .note-share,
+  #odc-ribbon-container .share-icon,
+  #odc-ribbon .share-icon,
+  #topToolbar .share-icon,
+  #topToolbar .note-share {
+    color: #000 !important;
+    fill: #000 !important;
+    stroke: #000 !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+  }
+  #odc-ribbon-container span.note-share, #odc-ribbon span.note-share { font-size: 14px !important; color:#000 !important; }
+</style>
+<style id="ai-analysis-inline-style">
+.ai-analysis-content { 
+  white-space: pre-wrap;
+  background: #f8f9fa;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #495057;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.ai-analysis-content .note { color: #c62828; font-weight: 700; }
+.ai-analysis-content .header { font-weight: 700; }
+</style><style id="ai-notes-preview-style">
+.ai-notes-preview{
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px dashed rgba(0,0,0,0.2);
+  border-radius: 8px;
+  background: #fff;
+  font-family: 'Poppins', sans-serif;
+  white-space: pre-wrap;
+  color: #333;
+}
+.ai-notes-preview .label{ font-weight: 700; }
+.ai-notes-preview .note{ color: #c62828; font-weight: 700; }
+</style><style id="ai-analysis-modal-style">
+.ai-analysis-modal {
+  display: none; /* hidden by default */
+  position: fixed;
+  top: 5%;  /* move higher on screen */
+  left: 50%;
+  transform: translateX(-50%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  z-index: 2000;
+  width: 80%;
+  max-width: 700px;
+}
+.ai-analysis-modal.visible { display: block; }
+.ai-modal-inner { padding: 20px; }
+</style><style id="ai-analysis-bullet-style">
+/* Spacing for analysis bullets */
+.ai-analysis-content ul li,
+.ai-analysis-content ol li,
+.ai-analysis-content li,
+#aiAnalysisContent li {
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
+#aiAnalysisContent {
+  line-height: 1.8 !important;
+}
+
+/* Spacing for live notes preview */
+#aiNotesLive {
+  line-height: 1.8 !important;
+  white-space: pre-wrap;
+}
+#aiNotesLive .note-line {
+  display: block;
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+}
 </style></head>
 <body class='\"dark\"'>
 <script>
@@ -2227,6 +2314,16 @@ select#ownerSelect {
   pointer-events: auto;
   transform: translateY(0);
   z-index: 1000;
+  /* Force the popup background to dark/black and text to white */
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+/* Ensure individual options are dark as well (where browser respects styling) */
+#ownerSelect.owner-show option {
+  background: #000 !important;
+  color: #fff !important;
 }
 
 
@@ -5589,7 +5686,6 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 <div class="big" id="nextDays"></div>
 </div>
 </div>
-
 </div>
 </div>
 <div class="card" id="chartCard">
@@ -5610,9 +5706,8 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 </div>
 </div>
 </div>
-
 <div class="card" id="monthlyPillsSection" style="margin-top:10px; padding:10px;">
-  <div aria-label="Monthly progress overview" class="months-mini" id="monthsMini"></div>
+<div aria-label="Monthly progress overview" class="months-mini" id="monthsMini"></div>
 </div>
 <div class="card" id="generalNotesCard" style="margin-top:8px; padding:12px;">
 <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
@@ -5722,51 +5817,27 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 </div>
 </div>
 <div aria-label="AI Analysis" aria-modal="true" class="modal ai-analysis-modal" id="aiAnalysisModal" role="dialog">
-<div class="ai-modal-inner" onclick="event.stopPropagation()">
-<div class="ai-modal-header">
-<h3>🤖 AI Performance Analysis</h3>
-<div class="ts">Generated: <span id="analysisTimestamp">—</span></div>
-</div>
-<div style="max-height:60vh; overflow-y:auto;">
-<pre id="aiAnalysisContent"></pre>
-</div>
-<!-- sharing-buttons for AI Analysis removed as requested -->
-<!-- Optional quick note for sharing -->
-<div class="sharing-note" style="display:flex; gap:8px; align-items:center; justify-content:center; margin-top:8px;">
-<input id="shareOptionalNote" placeholder="Optional note 1 (e.g., summary)" style="width:33%; padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); font-size: 14px;"/>
-<input id="shareOptionalNote2" placeholder="Optional note 2 (e.g., action/request)" style="width:33%; padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.08); font-size: 14px;"/>
-<button aria-label="Clear notes" class="ghost" id="shareNoteClear" style="padding:6px 10px;" title="Clear notes">Clear</button>
-</div>
-<!-- Share preview modal (reused) -->
-<div aria-modal="true" class="modal" id="sharePreviewModal" role="dialog" style="display:none; max-width:720px; width:90vw;">
 <div class="ai-modal-inner">
 <div class="ai-modal-header">
-<h3>Share Preview</h3>
-<div class="ts" style="font-size: 14px; color:#444;">Review your analysis and notes below. When ready, click <b>Proceed</b> to choose how to share.</div>
+<h3>🤖 AI Performance Analysis</h3>
+<button class="close-btn" onclick="document.getElementById('aiAnalysisModal').classList.remove('visible')">✕</button>
 </div>
-<div style="max-height:50vh; overflow:auto; background:#fafafa; padding:12px; border-radius:8px; border:1px solid rgba(0,0,0,0.04);">
-<div id="sharePreviewNotes" style="color:#c62828; font-weight:600; margin-bottom:8px; white-space:pre-wrap;"></div>
-<pre id="sharePreviewContent" style="white-space:pre-wrap; word-wrap:break-word; margin:0; font-size: 14px; color:#222;"></pre>
-</div>
-<div style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px;">
-<button class="ghost" id="sharePreviewCancel">Cancel</button>
-<button class="ghost" id="sharePreviewProceed"><b>Proceed</b> →</button>
-</div>
-</div>
-</div>
-<!-- Compact share action picker (appears after Proceed) -->
-<div id="shareActionPicker" style="display:none; position:fixed; right:18px; bottom:22px; z-index:12000;">
-<div style="background:var(--card); border:1px solid rgba(0,0,0,0.06); border-radius:10px; padding:10px; box-shadow:0 6px 18px rgba(0,0,0,0.08); min-width:260px;">
-<div style="font-size: 14px; color:#444; margin-bottom:8px; text-align:center;">Choose how you want to share:</div>
-<div style="display:flex; gap:8px; align-items:center; justify-content:center;">
-<button class="ghost" id="pickerCopy">Copy</button>
-<button class="ghost" id="pickerWhatsApp">WhatsApp</button>
-<button class="ghost" id="pickerEmail">Email</button>
-<button class="ghost" id="pickerExport">Export</button>
-<button class="ghost" id="pickerCancel">Cancel</button>
-</div>
-</div>
-</div>
+<!-- Content area -->
+<div class="ai-analysis-content" data-base="" id="aiAnalysisContent"></div><div class="ai-notes-preview" id="aiNotesPreview"></div>
+<!-- Optional notes (included in all shares) -->
+<div class="ai-notes" style="margin-top:12px; display:grid; gap:8px;">
+<input id="aiNote1" placeholder="Optional note 1 (e.g., summary)" style="padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); background:#fff;" type="text"/>
+<input id="aiNote2" placeholder="Optional note 2 (e.g., action/request)" style="padding:8px 10px; border-radius:8px; border:1px solid rgba(0,0,0,0.15); background:#fff;" type="text"/>
+</div><div class="ai-notes-live" id="aiNotesLive" style="margin-top:8px; padding:10px 12px; border:1px dashed rgba(0,0,0,0.2); border-radius:8px; background:#fff; font-family:'Poppins',sans-serif; white-space:pre-wrap; color:#333;">Live notes preview will appear here as you type.</div>
+<!-- Sharing buttons (always visible inside modal) -->
+<div class="sharing-buttons" style="margin-top:12px;">
+<button class="ghost" onclick="copyAIAnalysis()">📋 Copy</button>
+<button class="ghost" onclick="shareAIAnalysis()">🔗 Share</button>
+<button class="ghost" onclick="exportAIAnalysis()">⬇️ Export</button>
+<button class="ghost" onclick="shareAIWhatsApp()">🟢 WhatsApp</button>
+<button class="ghost" onclick="shareAIEmail()">✉️ Email</button>
+<button class="ghost" onclick="clearAINotes()">🧹 Clear Notes</button>
+</div><div class="ai-modal-footer" style="margin-top:12px; display:flex; justify-content:flex-end; gap:8px;"><button class="ghost" onclick="document.getElementById('aiAnalysisModal').classList.remove('visible')">Close</button></div>
 </div>
 </div>
 <!-- Scenario Planning Modal -->
@@ -20748,6 +20819,301 @@ document.addEventListener("DOMContentLoaded", function() {
   }catch(e){ console.error(e); }
 })();
 </script>
+<!-- === Time‑Aware AI Analysis: injected on 2025‑09‑15 (Dubai) === -->
+<script id="ai-timeaware-analysis-2025-09-15">
+(function(){
+  if (window.__AI_TIMEAWARE_INSTALLED__) return;
+  window.__AI_TIMEAWARE_INSTALLED__ = true;
+
+  const AED = n => `AED ${Number(n||0).toLocaleString('en-US', {maximumFractionDigits:0})}`;
+  const pct = x => isFinite(x) ? `${(100 * x).toFixed(1)}%` : "0.0%";
+  const clamp = (x,min,max)=>Math.max(min,Math.min(max,x));
+
+  function daysBetween(a,b){
+    const ms = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate()) - Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+    return Math.max(0, Math.round(ms/86400000));
+  }
+  function resolveTodayForYear(year){
+    const real = new Date();
+    if (year < real.getFullYear()) return new Date(year, 11, 31);
+    if (year > real.getFullYear()) return new Date(year, 0, 1);
+    return real;
+  }
+  function monthIndexFromLabel(lbl){
+    if (!lbl) return -1;
+    const s = String(lbl).trim().toLowerCase();
+    const names = ["jan","feb","mar","apr","may","jun","jul","aug","sep","sept","oct","nov","dec"];
+    const idx = names.findIndex(k => s.startsWith(k));
+    if (idx === -1) {
+      const m = s.match(/(\d{1,2})/);
+      if (m) { const n = parseInt(m[1],10); if (n>=1 && n<=12) return n-1; }
+    } else { return idx >= 0 ? (idx===8?8:idx) % 12; }
+    return -1;
+  }
+  function parseMoney(v){
+    if (v == null) return 0;
+    const s = String(v).replace(/[^\d.\-]/g,'');
+    if (!s) return 0;
+    const n = Number(s);
+    return isFinite(n) ? n : 0;
+  }
+  function findHeaderIndexMap(table){
+    const ths = Array.from(table.querySelectorAll('thead th'));
+    const map = {}; ths.forEach((th, i)=>{ map[th.textContent.trim().toLowerCase()] = i; });
+    const get = (keys)=>{
+      for (const k of keys){
+        for (const [name, idx] of Object.entries(map)){
+          if (name.includes(k)) return idx;
+        }
+      }
+      return -1;
+    };
+    return { month:get(["month","mon"]), target:get(["target"]), inflow:get(["bank inflow","inflow","bank"]) };
+  }
+  function extractFromTable(){
+    const table = document.querySelector('table#dataTable, table.main-table, table[data-role="tracker"], table');
+    if (!table) return null;
+    const idx = findHeaderIndexMap(table);
+    if (idx.month === -1) return null;
+    const months = Array(12).fill(0);
+    let targetSum = 0;
+    const rows = Array.from(table.querySelectorAll('tbody tr'));
+    for (const tr of rows){
+      const tds = Array.from(tr.children);
+      const mLbl = tds[idx.month]?.textContent || "";
+      const mi = monthIndexFromLabel(mLbl);
+      if (mi>=0 && idx.inflow !== -1){
+        const inflowVal = parseMoney(tds[idx.inflow]?.textContent || "");
+        months[mi] += inflowVal;
+      }
+      if (idx.target !== -1){
+        const tVal = parseMoney(tds[idx.target]?.textContent || "");
+        targetSum += tVal;
+      }
+    }
+    return { monthlyInflows: months, targetYearTotal: targetSum };
+  }
+  function tryReadYear(){
+    const byAttr = document.querySelector('[data-year] .active,[data-role="year-toggle"] .active');
+    if (byAttr && byAttr.getAttribute('data-year')) return parseInt(byAttr.getAttribute('data-year'),10);
+    const sel = document.querySelector('#yearSelect, #yearInput, select[name="year"]');
+    if (sel && sel.value) return parseInt(sel.value,10);
+    try {
+      const keys = Object.keys(localStorage);
+      const k = keys.find(k=>/performanceTracker:owner_.*:year_(\d{4})/.test(k));
+      if (k){ const m = k.match(/year_(\d{4})/); if (m) return parseInt(m[1],10); }
+    } catch(_){}
+    return new Date().getFullYear();
+  }
+  function tryReadOwner(){
+    const el = document.querySelector('#ownerSelect, [data-role="owner-toggle"] .active');
+    if (el){ return el.value || el.getAttribute('data-owner') || el.textContent.trim(); }
+    try {
+      const keys = Object.keys(localStorage);
+      const k = keys.find(k=>/performanceTracker:owner_(.*):year_\d{4}/.test(k));
+      if (k){ const m = k.match(/owner_(.*):year_/); if (m) return m[1]; }
+    } catch(_){}
+    return "owner1";
+  }
+  function readKPITargetFromDOM(){
+    const kpiEl = document.querySelector('#kpiYearTarget,[data-kpi="year-target"], .kpi-year-target, .year-target-total');
+    if (!kpiEl) return null;
+    return parseMoney(kpiEl.textContent);
+  }
+  function computeState(){
+    const year = tryReadYear();
+    const ownerId = tryReadOwner();
+    let targetYearTotal = readKPITargetFromDOM();
+    let monthlyInflows = null;
+    const tableData = extractFromTable();
+    if (tableData){
+      monthlyInflows = tableData.monthlyInflows;
+      if (targetYearTotal == null || targetYearTotal === 0){
+        targetYearTotal = tableData.targetYearTotal;
+      }
+    }
+    if (!Array.isArray(monthlyInflows)) monthlyInflows = Array(12).fill(0);
+    if (!isFinite(targetYearTotal) || targetYearTotal <= 0) targetYearTotal = 0;
+    return { year, ownerId, targetYearTotal, monthlyInflows };
+  }
+  function generateAIAnalysis(state){
+    const year = state.year;
+    const target = Number(state.targetYearTotal||0);
+    const months = Array.from({length:12}, (_,i)=>Number((state.monthlyInflows||[])[i]||0));
+    const today = resolveTodayForYear(year);
+    const startOfYear = new Date(year, 0, 1);
+    const endOfYear   = new Date(year,11,31);
+    const dayOfYear   = daysBetween(startOfYear, today) + 1;
+    const daysInYear  = daysBetween(startOfYear, endOfYear) + 1;
+    const daysRemain  = daysBetween(today, endOfYear);
+    const elapsedFrac = clamp(dayOfYear / daysInYear, 0, 1);
+    const inflowYTD   = months.slice(0, today.getFullYear()===year ? today.getMonth()+1 : 12).reduce((a,b)=>a+b,0);
+    const achievedFrac= target>0 ? inflowYTD/target : 0;
+    const shortfall   = Math.max(0, target - inflowYTD);
+    const monthsPassed= (today.getFullYear()===year) ? (today.getMonth()+1) : 12;
+    const monthsRemain= Math.max(0, 12 - monthsPassed);
+    const avgMonthlySoFar = monthsPassed>0 ? inflowYTD / monthsPassed : 0;
+    const thisMonthIdx = (today.getFullYear()===year) ? today.getMonth() : 11;
+    const thisMonthInflow = months[thisMonthIdx] || 0;
+    const momentumRatio = (avgMonthlySoFar>0) ? (thisMonthInflow / avgMonthlySoFar) : (thisMonthInflow>0 ? 1.0 : 0.0);
+    const reqMonthly = monthsRemain>0 ? (shortfall / monthsRemain) : shortfall;
+    const reqDaily   = daysRemain>0 ? (shortfall / daysRemain) : shortfall;
+    const paceRatio  = (avgMonthlySoFar>0) ? (reqMonthly / avgMonthlySoFar) : (reqMonthly>0 ? 2.0 : 0.0);
+    const timePressure = 1 - clamp(daysRemain / daysInYear, 0, 1);
+    const progressGap = Math.max(0, (elapsedFrac - achievedFrac));
+    let score = 10 * clamp( (progressGap * (0.6 + 0.8*timePressure)) + Math.max(0, paceRatio - 1) * 0.8, 0, 1);
+    if (monthsRemain <= 2 && shortfall > 0) score = Math.max(score, 7.5 + 2.0*Math.min(1, shortfall/Math.max(target,1)));
+    const riskScore = Math.round(clamp(score, 0, 10));
+    let zone = "⚪️ Balanced Zone";
+    if (monthsRemain >= 9 && shortfall > 0) zone = "🟢 Comfort Zone";
+    if (monthsRemain <= 2 && shortfall > 0) zone = "🔴 Risk Zone";
+    if (zone === "⚪️ Balanced Zone") {
+      if (progressGap >= 0.07 || paceRatio >= 1.4) zone = "🟠 Warning Zone";
+      if (progressGap <= 0.03 && paceRatio <= 1.1) zone = "🟢 Comfort Zone";
+    }
+    const R_early = monthsRemain >= 9;
+    const R_mid   = monthsRemain >= 3 && monthsRemain <= 8;
+    const R_late  = monthsRemain <= 2;
+    let reasoning;
+    if (R_early) { reasoning = "Low inflow now is not critical because time is abundant. Focus on building consistent monthly inflows and tracking momentum by April."; }
+    else if (R_mid) { reasoning = "Shortfall is building. Recovery is possible but requires a sustained, above-average pace for the next few months."; }
+    else { reasoning = "Time is limited. The remaining shortfall must be closed with urgent corrective actions and large, confirmed inflows."; }
+    const momentumNote =
+      (avgMonthlySoFar === 0 && thisMonthInflow === 0) ? "Momentum cannot be assessed yet (no prior months)." :
+      (momentumRatio >= 1.05 ? "Momentum this month is above your average pace." :
+       (momentumRatio <= 0.85 ? "Momentum this month is below your average pace." :
+        "Momentum this month is roughly in line with your average pace."));
+    const lines = [
+      "🔹 Proposed AI Analysis Framework",
+      `1) Status Zone: ${zone} · Risk Score ${riskScore}/10`,
+      "",
+      "2) In-Depth Breakdown",
+      `• Target vs Inflow: ${AED(target)} vs ${AED(inflowYTD)} (${pct(achievedFrac)} achieved).`,
+      `• Time Factor: ${monthsRemain} month(s), ${daysRemain} day(s) remain until December.`,
+      `• Daily Needed Rate: ${AED(Math.ceil(reqDaily))} per day to hit the target.`,
+      `• Momentum Check: ${momentumNote}`,
+      "",
+      "Risk Reasoning:",
+      (R_early ? "• Early year → " : R_mid ? "• Mid-year → " : "• Late year → ") + reasoning,
+      (paceRatio>1.0
+        ? `• Required monthly pace is ${paceRatio.toFixed(2)}× your average so far (${AED(Math.round(avgMonthlySoFar))} → ${AED(Math.round(reqMonthly))}).`
+        : `• Required monthly pace is within reach (${AED(Math.round(reqMonthly))} needed vs ${AED(Math.round(avgMonthlySoFar))} average).`)
+    ];
+    if (R_late && shortfall>0) { lines.push(`• Tip: Lock in ${AED(Math.round(shortfall))} through confirmed deposits/cheques and trim low-probability items.`); }
+    return { zone, riskScore, text: lines.join("\n") };
+  }
+
+  function ensureModal(){
+    let modal = document.querySelector('#aiAnalysisModal');
+    if (!modal){
+      modal = document.createElement('div');
+      modal.id = 'aiAnalysisModal';
+      modal.innerHTML = [
+        '<div class="ai-modal-inner">',
+        '  <div class="ai-header">',
+        '    <div class="ai-title">AI Analysis</div>',
+        '    <div class="ai-actions">',
+        '      <button class="ai-copy" title="Copy analysis">Copy</button>',
+        '      <div class="ai-share-wrap">',
+        '        <button class="ai-share" title="Share options">Share ▾</button>',
+        '        <div class="ai-share-menu" aria-hidden="true">',
+        '          <button data-action="whatsapp">Share via WhatsApp</button>',
+        '          <button data-action="email">Share via Email</button>',
+        '          <button data-action="download">Download .txt</button>',
+        '          <button data-action="print">Print</button>',
+        '          <button data-action="copy">Copy to Clipboard</button>',
+        '        </div>',
+        '      </div>',
+        '      <button class="ai-close" aria-label="Close">×</button>',
+        '    </div>',
+        '  </div>',
+        '  <pre class="ai-text" style="white-space:pre-wrap;margin:0;"></pre>',
+        '</div>'
+      ].join("");
+      document.body.appendChild(modal);
+      const css = document.createElement('style');
+      css.textContent = `
+        #aiAnalysisModal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);z-index:999999}
+        #aiAnalysisModal.visible{display:flex}
+        #aiAnalysisModal .ai-modal-inner{max-width:860px;width:92%;max-height:80vh;overflow:auto;background:#0b0b0b;color:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 10px 30px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);position:relative}
+        #aiAnalysisModal .ai-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;position:sticky;top:0;background:#0b0b0b;padding-bottom:6px;z-index:2}
+        #aiAnalysisModal .ai-title{font-weight:600;font-size:16px;letter-spacing:.2px}
+        #aiAnalysisModal .ai-actions{display:flex;align-items:center;gap:8px}
+        #aiAnalysisModal .ai-actions button{background:#1e1e1e;color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px}
+        #aiAnalysisModal .ai-actions .ai-close{background:#902626;border-color:#b84848;font-size:18px;line-height:1;padding:3px 10px}
+        #aiAnalysisModal .ai-share-wrap{position:relative}
+        #aiAnalysisModal .ai-share-menu{position:absolute;right:0;top:110%;min-width:200px;background:#000;color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:6px;display:none;z-index:10000;box-shadow:0 10px 20px rgba(0,0,0,.45)}
+        #aiAnalysisModal .ai-share-menu[aria-hidden="false"]{display:block}
+        #aiAnalysisModal .ai-share-menu button{display:block;width:100%;text-align:left;background:transparent;border:0;padding:8px 10px;font-size:12px;color:#fff;border-radius:6px}
+        #aiAnalysisModal .ai-share-menu button:hover{background:rgba(255,255,255,.08)}
+      `;
+      document.head.appendChild(css);
+
+      // Bind handlers directly (no global delegation required)
+      const textEl = modal.querySelector('.ai-text');
+      const btnCopy = modal.querySelector('.ai-copy');
+      const btnShare = modal.querySelector('.ai-share');
+      const menu = modal.querySelector('.ai-share-menu');
+      const btnClose = modal.querySelector('.ai-close');
+
+      function getText(){ return textEl ? textEl.textContent : ""; }
+      function openMenu(show){
+        const vis = (show===undefined) ? (menu.getAttribute('aria-hidden')!=='false') : !!show;
+        menu.setAttribute('aria-hidden', vis ? 'false' : 'true');
+      }
+
+      btnCopy.addEventListener('click', ()=>{
+        const t = getText(); if (!t) return;
+        navigator.clipboard.writeText(t).then(()=>{
+          btnCopy.textContent = 'Copied'; setTimeout(()=>btnCopy.textContent='Copy', 1200);
+        }).catch(()=>{});
+      });
+      btnShare.addEventListener('click', (e)=>{ e.stopPropagation(); openMenu(); });
+      btnClose.addEventListener('click', ()=>{ modal.classList.remove('visible'); openMenu(false); });
+      modal.addEventListener('click', (e)=>{
+        if (e.target === modal){ modal.classList.remove('visible'); openMenu(false); }
+      });
+      // Share menu actions
+      menu.addEventListener('click', (e)=>{
+        const b = e.target.closest('button'); if (!b) return;
+        const action = b.getAttribute('data-action'); const text = getText();
+        if (action==='copy'){ navigator.clipboard.writeText(text); }
+        else if (action==='whatsapp'){ window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank'); }
+        else if (action==='email'){ window.location.href = 'mailto:?subject=' + encodeURIComponent('AI Analysis Summary') + '&body=' + encodeURIComponent(text); }
+        else if (action==='download'){ const blob = new Blob([text], {type:'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='AI_Analysis.txt'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href), 1000); }
+        else if (action==='print'){ const w = window.open('', '_blank', 'width=800,height=600'); w.document.write('<pre style="white-space:pre-wrap;font:14px/1.4 -apple-system,Segoe UI,Roboto,Arial,sans-serif; padding:16px;">'+(text.replace(/[&<>]/g, s=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]))) + '</pre>'); w.document.close(); w.focus(); w.print(); }
+        openMenu(false);
+      });
+      // ESC to close
+      document.addEventListener('keydown', (e)=>{
+        if (e.key==='Escape'){ modal.classList.remove('visible'); openMenu(false); }
+      });
+    }
+    return modal;
+  }
+
+  function renderToModal(text){
+    const modal = ensureModal();
+    const pre = modal.querySelector('.ai-text') || modal.querySelector('pre') || modal;
+    pre.textContent = text;
+    modal.classList.add('visible');
+  }
+
+  window.generateAIAnalysis = generateAIAnalysis;
+  window.runAiAnalysisAndShow = function(){
+    const state = computeState();
+    const out = generateAIAnalysis(state);
+    renderToModal(out.text);
+    return out;
+  };
+
+  // Optional keyboard shortcut
+  window.addEventListener('keydown', (e)=>{ if (e.altKey && (e.key==='a' || e.key==='A')){ try{ window.runAiAnalysisAndShow(); }catch(_){}} });
+
+  console.log("%cAI Analysis (time-aware) ready. Copy/Share/Close bound.", "padding:2px 6px;background:#222;color:#8ef;border-radius:4px");
+})();
+</script>
+<!-- === /Time‑Aware AI Analysis injection === -->
 </body>
 </html>
 <!-- === FINAL PATCH v26: Ribbon = Next Needed (future-only), Circle = Next Target (nearest with target) === -->
@@ -21524,6 +21890,135 @@ document.addEventListener("DOMContentLoaded", function() {
   }, true);
 })();
 </script>
+<!-- Enhance: Ensure any ribbon/dropdown popovers get Copy/WhatsApp actions -->
+<script>
+(function(){
+  function buildSummaryFromPop(pop){
+    try{
+      var titleEl = pop.querySelector('h4');
+      var title = titleEl ? (titleEl.textContent||'').trim() : '';
+      var kvEls = pop.querySelectorAll('.kv > div');
+      var lines = [];
+      if (title) lines.push(title);
+      if (kvEls && kvEls.length){
+        for (var i=0;i<kvEls.length;i+=2){
+          var k = (kvEls[i] && kvEls[i].textContent) ? kvEls[i].textContent.trim() : '';
+          var v = (kvEls[i+1] && kvEls[i+1].textContent) ? kvEls[i+1].textContent.trim() : '';
+          if (k) lines.push(k + ': ' + v);
+        }
+      } else {
+        var txt = (pop.textContent||'').trim();
+        if (txt) lines.push(txt);
+      }
+      return lines.join('\n');
+    }catch(e){ return pop.textContent || '';} 
+  }
+
+  function mkBtn(label){
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn';
+    b.textContent = label;
+    b.style.border = '1px solid rgba(0,0,0,0.6)';
+    b.style.background = '#fff';
+    b.style.padding = '4px 8px';
+    b.style.borderRadius = '6px';
+    b.style.fontSize = '12px';
+    b.style.cursor = 'pointer';
+    return b;
+  }
+
+  function attachSimpleActions(pop){
+    try{
+      if (!pop || !(pop instanceof Element)) return;
+      if (pop.querySelector('.ribbon-actions') || pop.querySelector('.simple-share-actions')) return;
+
+      var container = document.createElement('div');
+      container.className = 'simple-share-actions';
+      container.style.display = 'flex';
+      container.style.gap = '8px';
+      container.style.marginTop = '8px';
+      container.style.borderTop = '1px solid rgba(0,0,0,0.06)';
+      container.style.paddingTop = '8px';
+
+      var copy = mkBtn('Copy');
+      var wa   = mkBtn('WhatsApp');
+
+      container.appendChild(copy);
+      container.appendChild(wa);
+      pop.appendChild(container);
+
+      var summary = buildSummaryFromPop(pop);
+
+      copy.addEventListener('click', async function(){
+        try{
+          if (navigator.clipboard && navigator.clipboard.writeText){
+            await navigator.clipboard.writeText(summary);
+            var old = copy.textContent; copy.textContent = 'Copied';
+            setTimeout(function(){ copy.textContent = old; }, 1200);
+          } else {
+            var ta = document.createElement('textarea'); ta.value = summary; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); copy.textContent = 'Copied'; setTimeout(function(){ copy.textContent = 'Copy'; }, 1200);
+          }
+        }catch(e){ alert('Copy failed'); }
+      });
+
+      wa.addEventListener('click', function(){
+        var url = 'https://wa.me/?text=' + encodeURIComponent(summary);
+        window.open(url, '_blank');
+      });
+    }catch(e){}
+  }
+
+  if (window.MutationObserver){
+    try{
+      var mo = new MutationObserver(function(muts){
+        muts.forEach(function(m){
+          m.addedNodes && m.addedNodes.forEach(function(n){
+            try{
+              if (!n || n.nodeType !== 1) return;
+              if (n.classList && (n.classList.contains('month-pop') || n.classList.contains('gn-pop') || n.classList.contains('month-pop') )){
+                attachSimpleActions(n);
+                return;
+              }
+              // If subtree added, try to find any likely pop node
+              var found = null;
+              if (n.querySelector){
+                found = n.querySelector('.month-pop, .gn-pop, .share-pop, .ribbon-pop, .kv');
+              }
+              if (found){
+                var pop = found.closest ? (found.closest('.month-pop') || found.closest('.gn-pop') || found.closest('.share-pop') || found.closest('.ribbon-pop') || found) : found;
+                attachSimpleActions(pop);
+              }
+            }catch(_){ }
+          });
+        });
+      });
+      mo.observe(document.body, { childList:true, subtree:true });
+    }catch(e){}
+  }
+
+  // Also enhance any already-present popovers on load
+  try{ document.querySelectorAll('.month-pop, .gn-pop, .share-pop, .ribbon-pop').forEach(attachSimpleActions); }catch(e){}
+
+})();
+</script>
+<style id="share-actions-dark">
+/* Ensure action buttons inside popovers are dark and visible */
+.month-pop, .gn-pop, .share-pop, .ribbon-pop { background: #000 !important; color:#fff !important; }
+.month-pop .actions, .gn-pop .actions, .share-pop .actions, .ribbon-pop .actions, .simple-share-actions, .actions.ribbon-actions, .actions.gn-actions {
+  display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;
+}
+.month-pop .actions .btn, .gn-pop .actions .btn, .share-pop .actions .btn, .ribbon-pop .actions .btn,
+.simple-share-actions .btn, .actions.ribbon-actions .btn, .actions.gn-actions .btn {
+  background: #111 !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.12) !important;
+  padding: 6px 10px !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+}
+.month-pop .actions .btn:hover, .simple-share-actions .btn:hover, .actions.ribbon-actions .btn:hover { background:#222 !important; }
+</style>
 <!-- === Inject: General Notes Share Arrow (small) === -->
 <script>
 (function(){
@@ -23184,8 +23679,6 @@ document.addEventListener("DOMContentLoaded", function() {
 .gn-tip { margin-top: 6px; font-size: 12px; opacity: .8; }
 .gn-hide { display: none !important; }
 </style>
-
-
 <script id="gn-share-2025-09-15">
 (function(){
   if (window.__GN_SHARE_INSTALLED__) return; 
@@ -23346,14 +23839,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 })();
 </script>
-
-
-
-
-
-
-
-
 <style id="months-independent-static-2025-09-15">
 #monthlyPillsSection { }
 #monthlyPillsSection .months-mini {
@@ -23374,8 +23859,6 @@ document.addEventListener("DOMContentLoaded", function() {
   #monthlyPillsSection .months-mini { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
 }
 </style>
-
-
 <style id="month-pills-3fields-2025-09-15">
 #monthlyPillsSection .month-pill .stack { display:grid; grid-template-columns: 1fr; gap:6px; }
 #monthlyPillsSection .month-pill .title { font-weight:700; font-size:13px; margin-bottom:2px; }
@@ -23386,35 +23869,17 @@ document.addEventListener("DOMContentLoaded", function() {
 #monthlyPillsSection .month-pill .kv .value.val-bank { color: var(--green, #16a34a); }
 #monthlyPillsSection .month-pill .kv .value.val-balance { color: var(--orange, #e3b04b); }
 </style>
-
-
-
-
-
 <style id="pill-colors-hardening-2025-09-15">
 /* Hard color overrides so Bank is always green, Target red, Balance orange */
 #monthlyPillsSection .month-pill .kv .value.val-bank { color:#16a34a !important; }  /* green */
 #monthlyPillsSection .month-pill .kv .value.val-target { color:#ef4444 !important; } /* red */
 #monthlyPillsSection .month-pill .kv .value.val-balance { color:#e3b04b !important; } /* orange */
 </style>
-
-
-
-
-
 <style id="pill-colors-hardening-2025-09-15-v3">
 #monthlyPillsSection .month-pill .kv .value.val-bank { color:#16a34a !important; }
 #monthlyPillsSection .month-pill .kv .value.val-target { color:#ef4444 !important; }
 #monthlyPillsSection .month-pill .kv .value.val-balance { color:#e3b04b !important; }
 </style>
-
-
-
-
-
-
-
-
 <script id="pill-final-normalizer-2025-09-15">
 (function(){
   if (window.__PILL_FINAL_NORMALIZER__) return; window.__PILL_FINAL_NORMALIZER__=true;
@@ -23486,8 +23951,6 @@ document.addEventListener("DOMContentLoaded", function() {
   }
 })();
 </script>
-
-
 <style id="no-bold-columns-2025-09-15">
 /* Remove ALL bold styling inside column/table/pills areas */
 .tableCard, .group-outline-table, .months-mini, #monthlyPillsSection,
@@ -23505,6 +23968,773 @@ document.addEventListener("DOMContentLoaded", function() {
   font-weight: 400 !important;
 }
 </style>
+<script>
+    function copyAIAnalysis() {
+      const text = document.getElementById('aiAnalysisContent').innerText;
+      navigator.clipboard.writeText(text).then(() => alert("Copied to clipboard!"));
+    }
+
+    function shareAIAnalysis() {
+      const text = document.getElementById('aiAnalysisContent').innerText;
+      if (navigator.share) {
+        navigator.share({ title: "AI Performance Analysis", text })
+          .catch(err => console.log("Share failed", err));
+      } else {
+        alert("Sharing not supported in this browser.");
+      }
+    }
+
+    function exportAIAnalysis() {
+      const text = document.getElementById('aiAnalysisContent').innerText;
+      const blob = new Blob([text], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "AI_Analysis.txt";
+      link.click();
+    }
+    </script><script>
+(function(){
+  function buildAIShareText(){
+    const core = (document.getElementById('aiAnalysisContent')?.innerText || '').trim();
+    const n1 = (document.getElementById('aiNote1')?.value || '').trim();
+    const n2 = (document.getElementById('aiNote2')?.value || '').trim();
+    let notes = '';
+    if(n1) notes += "\n\n— Note 1: " + n1;
+    if(n2) notes += "\n— Note 2: " + n2;
+    return core + notes;
+  }
+  window.buildAIShareText = buildAIShareText;
+
+  window.copyAIAnalysis = function(){
+    const text = buildAIShareText();
+    navigator.clipboard.writeText(text).then(()=>alert('Copied to clipboard!'));
+  };
+
+  window.shareAIAnalysis = function(){
+    const text = buildAIShareText();
+    if (navigator.share) {
+      navigator.share({ title: 'AI Performance Analysis', text })
+        .catch(err => console.log('Share failed', err));
+    } else {
+      alert('Sharing not supported in this browser.');
+    }
+  };
+
+  window.exportAIAnalysis = function(){
+    const text = buildAIShareText();
+    const blob = new Blob([text], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'AI_Analysis.txt';
+    link.click();
+  };
+
+  window.shareAIWhatsApp = function(){
+    const msg = encodeURIComponent(buildAIShareText());
+    window.open("https://wa.me/?text=" + msg, "_blank");
+  };
+
+  window.shareAIEmail = function(){
+    const subject = encodeURIComponent("AI Performance Analysis");
+    const body = encodeURIComponent(buildAIShareText());
+    window.location.href = "mailto:?subject=" + subject + "&body=" + body;
+  };
+
+  window.clearAINotes = function(){
+    const n1 = document.getElementById('aiNote1');
+    const n2 = document.getElementById('aiNote2');
+    if (n1) n1.value = "";
+    if (n2) n2.value = "";
+    try{
+      localStorage.removeItem('performanceTracker:aiAnalysis:note1');
+      localStorage.removeItem('performanceTracker:aiAnalysis:note2');
+    }catch(e){}
+  };
+
+  // Simple autosave & load
+  function saveNotes(){
+    try{
+      localStorage.setItem('performanceTracker:aiAnalysis:note1', document.getElementById('aiNote1')?.value || '');
+      localStorage.setItem('performanceTracker:aiAnalysis:note2', document.getElementById('aiNote2')?.value || '');
+    }catch(e){}
+  }
+  function loadNotes(){
+    try{
+      const n1 = localStorage.getItem('performanceTracker:aiAnalysis:note1') || '';
+      const n2 = localStorage.getItem('performanceTracker:aiAnalysis:note2') || '';
+      if (document.getElementById('aiNote1')) document.getElementById('aiNote1').value = n1;
+      if (document.getElementById('aiNote2')) document.getElementById('aiNote2').value = n2;
+    }catch(e){}
+  }
+  document.addEventListener('DOMContentLoaded', loadNotes);
+  document.addEventListener('input', function(e){
+    if (e.target && (e.target.id === 'aiNote1' || e.target.id === 'aiNote2')) saveNotes();
+  });
+})();
+</script><script id="ai-analysis-separate-notes-script">
+(function(){
+  function getBase(){
+    var el = document.getElementById('aiAnalysisContent');
+    if (!el) return "";
+    var base = el.getAttribute('data-base');
+    // Fallback if null/undefined/empty string
+    if (!base) base = (el.textContent || "");
+    // Strip any accidentally pasted NOTE lines
+    base = base.replace(/^\s*🔴?\s*NOTE\s*[12]\s*:\s*.*$/gm, '').trim();
+    // Persist clean base for next time
+    el.setAttribute('data-base', base);
+    return base;
+  }
+
+  // Public API: call this with your real analysis text
+  window.setAIBaseText = function(text){
+    var el = document.getElementById('aiAnalysisContent');
+    if (!el) return;
+    text = (text || '').replace(/^\s*🔴?\s*NOTE\s*[12]\s*:\s*.*$/gm, '').trim();
+    el.setAttribute('data-base', text);
+    el.textContent = text; // show analysis (unchanged) in popup
+  };
+
+  // Build SHARE TEXT = analysis + notes (Note1 after "Generated:", Note2 at end)
+  function buildAIShareText(){
+    var body = getBase();
+    var n1 = (document.getElementById('aiNote1')?.value || '').trim();
+    var n2 = (document.getElementById('aiNote2')?.value || '').trim();
+
+    if (n1){
+      var idx = body.indexOf("Generated:");
+      if (idx !== -1){
+        var nextNL = body.indexOf("\n", idx);
+        if (nextNL !== -1) body = body.slice(0, nextNL+1) + "🔴 NOTE 1: " + n1 + "\n" + body.slice(nextNL+1);
+        else body = body + "\n" + "🔴 NOTE 1: " + n1;
+      } else {
+        body = "🔴 NOTE 1: " + n1 + "\n" + body;
+      }
+    }
+    if (n2){
+      body = body + "\n" + "🔴 NOTE 2: " + n2;
+    }
+    return body.trim();
+  }
+  window.buildAIShareText = buildAIShareText;
+
+  function shareBody(){
+    return encodeURIComponent(buildAIShareText());
+  }
+
+  // Share actions
+  window.copyAIAnalysis = function(){
+    var text = buildAIShareText();
+    navigator.clipboard.writeText(text).then(()=>alert('Copied to clipboard!'));
+  };
+  window.shareAIAnalysis = function(){
+    var text = buildAIShareText();
+    if (navigator.share) navigator.share({ title: 'ENBD Performance Analysis', text }).catch(()=>{});
+    else alert('Sharing not supported in this browser.');
+  };
+  window.exportAIAnalysis = function(){
+    var text = buildAIShareText();
+    var blob = new Blob([text], { type: 'text/plain' });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'AI_Analysis_with_Notes.txt';
+    link.click();
+  };
+  window.shareAIWhatsApp = function(){
+    var msg = encodeURIComponent(buildAIShareText());
+    window.open("https://wa.me/?text=" + msg, "_blank");
+  };
+  window.shareAIEmail = function(){
+    var subject = encodeURIComponent("ENBD Performance Analysis (with notes)");
+    var body = shareBody();
+    // Use mailto for compatibility
+    window.location.href = "mailto:?subject=" + subject + "&body=" + body;
+  };
+})();
+</script><script id="ai-notes-live-script">
+(function(){
+  function renderLiveNotes(){
+    var live = document.getElementById('aiNotesLive');
+    if (!live) return;
+    var n1 = (document.getElementById('aiNote1')?.value || '').trim();
+    var n2 = (document.getElementById('aiNote2')?.value || '').trim();
+    if (!n1 && !n2){
+      live.textContent = "Live notes preview will appear here as you type.";
+      return;
+    }
+    var out = "";
+    if (n1) out += '<div class="note-line">NOTE 1: ' + escapeHtml(n1) + '</div>';
+    if (n2) out += '<div class="note-line">NOTE 2: ' + escapeHtml(n2) + '</div>';
+    live.innerHTML = out;
+  }
+  function escapeHtml(str){
+    return (str||'').replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));
+  }
+  window.addEventListener('input', function(e){
+    if (e && e.target && (e.target.id === 'aiNote1' || e.target.id === 'aiNote2')) renderLiveNotes();
+  });
+  if (document.readyState === 'complete') setTimeout(renderLiveNotes, 60);
+  else window.addEventListener('load', function(){ setTimeout(renderLiveNotes, 60); }, { once:true });
+})();
+</script>
+<!-- Year Context UX (leak-safe, singletons) -->
+<script>
+(() => {
+  // ---------- Guard: tear down any previous instance ----------
+  const NS = 'yrCtxV1';
+  if (window.__yrCtx && window.__yrCtx.ns === NS && window.__yrCtx.teardown) {
+    window.__yrCtx.teardown();
+  }
+
+  // ---------- Create single style (replace if re-run) ----------
+  const STYLE_ID = 'yr-context-style-v1';
+  document.getElementById(STYLE_ID)?.remove();
+  const style = document.createElement('style');
+  style.id = STYLE_ID;
+  style.textContent = `
+    #yrCtxBar{display:flex;gap:8px;align-items:center;justify-content:center;margin:8px 0 6px}
+    #yrCtxBar .badge{padding:4px 10px;border:1px solid rgba(0,0,0,.12);border-radius:10px;background:var(--card, #fff);color:var(--text-bold, #111);font-weight:600}
+    #yrCtxBar .badge.year{background:#000;color:#fff;border-color:rgba(255,255,255,.18)}
+    #yrCtxBar .sep{opacity:.5}
+    body::after{content: attr(data-year); position: fixed; right:12px; bottom:10px; z-index:0;
+      font-size:42px; font-weight:700; letter-spacing:2px; color: rgba(0,0,0,.05); pointer-events:none}
+    #yrToast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
+      background:#000;color:#fff;padding:6px 10px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s; z-index:9999}
+    #yrEmpty{display:none;margin:6px auto 0;padding:8px 12px;border:1px dashed rgba(0,0,0,.2);
+      border-radius:10px;background:#fff;max-width:420px;text-align:center;color:#6b7785;font-size:13px}
+  `;
+  document.head.appendChild(style);
+
+  // ---------- Create/ensure single DOM nodes ----------
+  const ensureSingleton = (id, html) => {
+    let el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = id;
+      el.innerHTML = html;
+      // Insert under your title/header; adjust selector if needed:
+      const header = document.querySelector('#branding, header, h1') || document.body.firstElementChild;
+      (header?.parentNode || document.body).insertBefore(el, header?.nextSibling || null);
+    }
+    return el;
+  };
+
+  ensureSingleton('yrCtxBar', `
+    <span class="badge" id="yrCtxOwner">Owner 1</span>
+    <span class="sep">•</span>
+    <span class="badge year" id="yrCtxYear">2025</span>
+  `);
+
+  ensureSingleton('yrEmpty', `
+    No entries for <span id="yrEmptyVal">2025</span> yet — you’re still viewing this year’s context.
+  `);
+
+  if (!document.getElementById('yrToast')) {
+    const t = document.createElement('div');
+    t.id = 'yrToast';
+    document.body.appendChild(t);
+  }
+
+  // ---------- Functions (no globals leaked) ----------
+  const showToast = (msg) => {
+    const el = document.getElementById('yrToast');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.opacity = '1';
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => (el.style.opacity = '0'), 900);
+  };
+
+  const setContext = (owner, year) => {
+    // Body anchor
+    document.body.dataset.year = year;
+
+    // Context bar
+    const yo = document.getElementById('yrCtxOwner');
+    const yy = document.getElementById('yrCtxYear');
+    if (yo) yo.textContent = owner?.replace(/^owner/i, 'Owner ') || 'Owner';
+    if (yy) yy.textContent = String(year);
+
+    // URL echo (non-breaking)
+    try { history.replaceState(null, '', `#owner=${owner}&year=${year}`); } catch(e){}
+
+    // Persist (keeps your isolation style)
+    try { localStorage.setItem('performanceTracker:activeOwnerYear', JSON.stringify({owner, year})); } catch(e){}
+  };
+
+  // Public adapters (kept inside a single object to avoid leakage)
+  const api = {
+    ns: NS,
+    setActiveYearSafe(year) {
+      const owner = (window.activeOwner || 'owner1');
+      setContext(owner, year);
+      showToast(\`Year set to \${year}\`);
+      // Trigger your existing redraw if present
+      if (typeof window.refreshAllForOwnerYear === 'function') {
+        window.refreshAllForOwnerYear(owner, year);
+      }
+    },
+    indicateYearEmpty(hasData, year) {
+      const box = document.getElementById('yrEmpty');
+      const val = document.getElementById('yrEmptyVal');
+      if (val) val.textContent = year;
+      if (box) box.style.display = hasData ? 'none' : 'block';
+    },
+    teardown() {
+      // Remove only what we added
+      document.getElementById(STYLE_ID)?.remove();
+      document.getElementById('yrToast')?.remove();
+      document.getElementById('yrEmpty')?.remove();
+      document.getElementById('yrCtxBar')?.remove();
+      window.__yrCtx = null;
+    }
+  };
+
+  // Expose a single, replaceable handle for your page code to call
+  window.__yrCtx = api;
+
+  // ---------- Hook into your existing toggles (non-invasive) ----------
+  // If you already have setActiveYear(year), we wrap it once. Otherwise, we provide a safe one.
+  if (!window.__wrappedSetActiveYear) {
+    window.__wrappedSetActiveYear = true;
+    const original = window.setActiveYear;
+    window.setActiveYear = function(year) {
+      // Call original first if exists
+      if (typeof original === 'function') original.call(this, year);
+      // Then enforce our UI anchors once
+      api.setActiveYearSafe(year);
+    };
+  }
+
+  // Initialize from stored state (once)
+  try {
+    const saved = JSON.parse(localStorage.getItem('performanceTracker:activeOwnerYear') || '{}');
+    const owner = saved.owner || window.activeOwner || 'owner1';
+    const year  = saved.year  || window.activeYear  || new Date().getFullYear();
+    setContext(owner, year);
+  } catch(e) {}
+
+})();
+</script>
+
+<!-- Branding Year (below owner/year card, outside container; leak-safe) -->
+<script>
+(() => {
+  const NODE_ID = 'brandingYear';
+
+  function findOwnerYearAnchor(){
+    const ownerSelect = document.getElementById('ownerSelect');
+    const yearInput   = document.getElementById('yearInput');
+    const yearFancy   = document.getElementById('yearFancy');
+    const climb = (el) => el ? (el.closest('.owner-container, .owner-middle, .group-frame, .controls, .toolbar, .selectors') || el.parentElement) : null;
+    let a = climb(ownerSelect) || climb(yearInput) || climb(yearFancy);
+    if (a) return a;
+    a = document.querySelector('.owner-container') || document.querySelector('.owner-middle');
+    if (a) return a;
+    return document.querySelector('#branding') || document.querySelector('h1, header') || document.body.firstElementChild;
+  }
+
+  function ensureBrandingYearNode(){
+    let node = document.getElementById(NODE_ID);
+    if (!node){
+      node = document.createElement('div');
+      node.id = NODE_ID;
+    }
+    const anchor = findOwnerYearAnchor();
+    if (anchor){
+      // Decide where to insert: after the card, but if the parent is a nowrap flex row,
+      // insert after the parent to guarantee a new line below the whole row.
+      let parent = anchor.parentElement;
+      let insertionParent = parent;
+      let referenceNode = anchor.nextSibling;
+      try {
+        const cs = parent ? getComputedStyle(parent) : null;
+        if (cs && (cs.display.includes('flex') || cs.display.includes('inline-flex')) && (cs.flexWrap === 'nowrap' || cs.flexWrap === 'initial' || cs.flexWrap === 'none')) {
+          insertionParent = parent.parentElement || document.body;
+          referenceNode = parent.nextSibling;
+        }
+      } catch(e){}
+
+      if (insertionParent){
+        if (referenceNode) {
+          insertionParent.insertBefore(node, referenceNode);
+        } else {
+          insertionParent.appendChild(node);
+        }
+      } else if (!node.parentNode){
+        document.body.appendChild(node);
+      }
+    } else if (!node.parentNode){
+      document.body.insertBefore(node, document.body.firstChild);
+    }
+    return node;
+  }
+
+  function getActiveYearFallback(){
+    try{
+      const saved = JSON.parse(localStorage.getItem('performanceTracker:activeOwnerYear')||'{}');
+      if (saved && saved.year) return saved.year;
+    }catch(e){}
+    const y = document.body?.dataset?.year;
+    if (y) return y;
+    return new Date().getFullYear();
+  }
+
+  function setBrandingYear(year){
+    const el = ensureBrandingYearNode();
+    el.textContent = `Year Data: ${year}`;
+    // styles to force below / full width in any layout
+    el.style.display = 'block';
+    el.style.width = '100%';
+    el.style.flexBasis = '100%';   // flex rows
+    el.style.gridColumn = '1 / -1';// css grid
+    el.style.clear = 'both';       // floats
+    el.style.marginTop = '8px';
+    el.style.textAlign = 'center';
+    el.style.fontSize = '14px';
+    el.style.fontWeight = '600';
+    el.style.color = '#d4af37';
+  }
+
+  // Initial render
+  setBrandingYear(getActiveYearFallback());
+
+  // Hook yrCtx setter
+  if (window.__yrCtx && typeof window.__yrCtx.setActiveYearSafe === 'function'){
+    const _origSafe = window.__yrCtx.setActiveYearSafe;
+    if (!_origSafe.__brandingYearBelowCard){
+      window.__yrCtx.setActiveYearSafe = function(year){
+        const r = _origSafe.call(this, year);
+        setBrandingYear(year);
+        return r;
+      };
+      window.__yrCtx.setActiveYearSafe.__brandingYearBelowCard = true;
+    }
+  } else {
+    if (!window.__brandingYearBelowCardWrapped){
+      window.__brandingYearBelowCardWrapped = true;
+      const _orig = window.setActiveYear;
+      window.setActiveYear = function(year){
+        if (typeof _orig === 'function') _orig.call(this, year);
+        setBrandingYear(year);
+      };
+    }
+  }
+
+  // Also react if body[data-year] changes
+  try{
+    const mo = new MutationObserver(muts => {
+      for (const m of muts){
+        if (m.type === 'attributes' && m.attributeName === 'data-year'){
+          const y = document.body.getAttribute('data-year');
+          if (y) setBrandingYear(y);
+        }
+      }
+    });
+    mo.observe(document.body, { attributes:true });
+  }catch(e){}
+})();
+</script>
+
+<!-- Year Wiring (connects UI controls to yrCtx + brandingYear; leak-safe) -->
+<script id="yr-wiring-v1">
+(function(){
+  if (window.__yrWiredV1) return; // idempotent guard
+  window.__yrWiredV1 = true;
+
+  function readYearFromUI(){
+    var y = 0;
+    var inp = document.getElementById('yearInput');
+    if (inp && inp.value) y = parseInt(inp.value, 10);
+    if (!y){
+      var fancy = document.getElementById('yearFancy');
+      if (fancy && fancy.textContent) y = parseInt(fancy.textContent.trim(), 10);
+    }
+    if (!y || !isFinite(y)) y = new Date().getFullYear();
+    return y;
+  }
+
+  function pushYear(year){
+    try{
+      if (window.__yrCtx && typeof window.__yrCtx.setActiveYearSafe === 'function'){
+        window.__yrCtx.setActiveYearSafe(year);
+      } else if (typeof window.setActiveYear === 'function'){
+        window.setActiveYear(year);
+      }
+      // Also let branding year reflect immediately
+      var by = document.getElementById('brandingYear');
+      if (by) by.textContent = 'Year Data: ' + year;
+    }catch(e){}
+  }
+
+  // 1) Listen to direct input changes
+  ['change','input'].forEach(function(t){
+    var el = document.getElementById('yearInput');
+    if (el && !el.__yrWire){
+      el.addEventListener(t, function(){ pushYear(readYearFromUI()); });
+      el.__yrWire = true;
+    }
+  });
+
+  // 2) Prev/Next/Toggle style buttons if present
+  ['yearPrevBtn','yearNextBtn','yearToggleBtn'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el && !el.__yrWire){
+      el.addEventListener('click', function(){ setTimeout(function(){ pushYear(readYearFromUI()); }, 0); });
+      el.__yrWire = true;
+    }
+  });
+
+  // 3) Observe the fancy label in case other scripts mutate it
+  try{
+    var fancy = document.getElementById('yearFancy');
+    if (fancy && !fancy.__yrMo){
+      var last = readYearFromUI();
+      var mo = new MutationObserver(function(){
+        var cur = readYearFromUI();
+        if (cur !== last){
+          last = cur;
+          pushYear(cur);
+        }
+      });
+      mo.observe(fancy, { childList:true, characterData:true, subtree:true });
+      fancy.__yrMo = mo;
+    }
+  }catch(e){}
+
+  // 4) Fire once on load to sync state
+  pushYear(readYearFromUI());
+
+})();
+</script>
+
+
+<!-- AI Analysis v1 (leak-safe, idempotent) -->
+<style id="ai-analysis-style-v1">
+  #aiV1Modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);z-index:99999}
+  #aiV1Modal .ai-box{background:#111;color:#fff;max-width:720px;width:92vw;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.35);padding:16px 16px 12px}
+  #aiV1Modal .ai-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  #aiV1Modal .ai-head h3{margin:0;font-size:18px;font-weight:700}
+  #aiV1Modal .ai-body{font-size:14px;line-height:1.5;white-space:pre-wrap}
+  #aiV1Modal .ai-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+  #aiV1Modal .btn{border:1px solid rgba(255,255,255,.25);background:#000;color:#fff;border-radius:10px;padding:6px 10px;font-size:13px;cursor:pointer}
+  #aiV1Modal .btn:hover{background:#222}
+</style>
+<script id="ai-analysis-script-v1">
+(() => {
+  // Tear down if re-injected
+  try{ document.getElementById('ai-analysis-style-v1') && (function(s){ if(s.nextSibling && s.nextSibling.id==='aiV1Modal'){} })(document.getElementById('ai-analysis-style-v1')); }catch(e){}
+  if (window.__aiV1 && window.__aiV1.teardown){ window.__aiV1.teardown(); }
+
+  // Helpers
+  const num = (v)=>{
+    if (v==null) return 0;
+    if (typeof v==='number') return v;
+    const s = String(v).replace(/[,\sA-Za-zAED:\u00A0]/g,'').replace(/[^\d\.-]/g,'');
+    const n = parseFloat(s);
+    return isNaN(n)?0:n;
+  };
+  const clip=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const fmt = (n)=> new Intl.NumberFormat('en-US',{maximumFractionDigits:0}).format(Math.round(n||0));
+  const today = ()=> new Date();
+
+  function daysInYear(y){return (new Date(y,11,31)-new Date(y,0,0))/86400000;}
+  function daysElapsed(y){
+    const t=today(), d0=new Date(y,0,1);
+    if(t<d0) return 0;
+    const d = Math.floor((t - d0)/86400000)+1;
+    return Math.min(d, daysInYear(y));
+  }
+
+  // Data collection (best-effort, robust to structure)
+  function collectYearData(owner, year){
+    let T=0, A=0, last60=0;
+    // 1) Try table parsing
+    try{
+      const tbl = document.querySelector('table');
+      if (tbl){
+        const headRow = tbl.tHead ? tbl.tHead.rows[0] : tbl.querySelector('thead tr');
+        let idxTarget=-1, idxInflow=-1, idxMonth=-1;
+        if (headRow){
+          [...headRow.cells].forEach((th,i)=>{
+            const k = (th.textContent||'').trim().toLowerCase();
+            if (k.includes('target')) idxTarget=i;
+            if (k.includes('bank inflow') || k.includes('inflow')) idxInflow=i;
+            if (k.includes('month')) idxMonth=i;
+          });
+        }
+        const rows = tbl.tBodies ? [...tbl.tBodies].flatMap(tb=>[...tb.rows]) : [...tbl.querySelectorAll('tbody tr')];
+        let monthSeries = {}; // monthIndex=>sum inflow
+        rows.forEach(tr=>{
+          const tds = [...tr.cells];
+          if (idxTarget>=0) T += num(tds[idxTarget]?.textContent);
+          if (idxInflow>=0) {
+            const val = num(tds[idxInflow]?.textContent);
+            A += val;
+            if (idxMonth>=0){
+              const m = (tds[idxMonth]?.textContent||'').trim().slice(0,3).toLowerCase();
+              const map={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+              if (m in map){ monthSeries[map[m]] = (monthSeries[map[m]]||0)+val; }
+            }
+          }
+        });
+        // Approximate last 60 days via last 2 months if present
+        const now = today(); const mNow = now.getMonth();
+        const mPrev = (mNow+11)%12;
+        if (monthSeries[mNow]!=null || monthSeries[mPrev]!=null){
+          last60 = (monthSeries[mNow]||0) + (monthSeries[mPrev]||0);
+        }
+      }
+    }catch(e){}
+
+    // 2) Fallbacks
+    const dElapsed = daysElapsed(year);
+    if (!T && !A){
+      // Fallback to any totals shown in DOM
+      try{
+        const targetEl = [...document.querySelectorAll('*')].find(el=>/total target|annual target/i.test(el.textContent||''));
+        if (targetEl) T = num(targetEl.textContent);
+      }catch(e){}
+      try{
+        const inflowEl = [...document.querySelectorAll('*')].find(el=>/cumulative inflow|bank inflow total/i.test(el.textContent||''));
+        if (inflowEl) A = num(inflowEl.textContent);
+      }catch(e){}
+    }
+    if (!last60 && A && dElapsed>0){
+      last60 = A * Math.min(1, 60/Math.max(1,dElapsed)); // proportional fallback
+    }
+    // Last 3 months naive from monthSeries or fallback from last60
+    let last3 = [0,0,0];
+    try{
+      const now = today(); const m = now.getMonth();
+      const ser = Array.from({length:12}, (_,i)=>0);
+      // monthSeries may be sparse
+      for (const k in monthSeries){ if (Object.prototype.hasOwnProperty.call(monthSeries,k)) ser[+k]=monthSeries[k]; }
+      last3 = [ser[(m+10)%12], ser[(m+11)%12], ser[m]];
+    }catch(e){
+      const avg = last60/2; last3=[avg*0.3, avg*0.4, avg*0.3];
+    }
+    return { target:T||0, cumActual:A||0, last60Days:last60||0, last3Months:last3 };
+  }
+
+  function aiAnalysis(owner, year, data){
+    const { target:T, cumActual:A, last60Days, last3Months, top3Share=0, latePDCRatio=0, hitRate=1 } = data;
+    const dTotal = daysInYear(year);
+    const dElapsed = daysElapsed(year);
+    const dLeft = Math.max(0, dTotal - dElapsed);
+    const gap = Math.max(0, T - A);
+    const need_day = gap / Math.max(1, dLeft);
+    const act_day  = (last60Days||0) / 60;
+
+    const expected = T * (dElapsed / Math.max(1, dTotal));
+    const progress_ratio = (expected>0) ? (A/expected) : (A>0?1:1);
+
+    // Momentum proxy
+    let mom = 0;
+    if (Array.isArray(last3Months) && last3Months.length===3){
+      const d1 = last3Months[1]-last3Months[0];
+      const d2 = last3Months[2]-last3Months[1];
+      mom = Math.sign(d1 + d2); // -1,0,1
+    }
+
+    const C1 = clip(10 * ((need_day / Math.max(1e-6, act_day)) - 1) / 0.5, 0, 10);
+    const C2 = clip(10 * (1 - progress_ratio), 0, 10);
+    const C3 = clip(5 * (-mom), 0, 10);
+    const C4 = clip(10 * (Math.max(0, (top3Share - 0.6)) / 0.3), 0, 10);
+    const C5 = clip(10 * latePDCRatio, 0, 10);
+    const C6 = clip(10 * (1 - hitRate), 0, 10);
+
+    const tau = dElapsed / Math.max(1, dTotal);
+    let w = { C1:0.30+0.25*tau, C2:0.30+0.10*tau, C3:0.15, C4:0.10, C5:0.10, C6:0.05 };
+    const sumW = Object.values(w).reduce((a,b)=>a+b,0); Object.keys(w).forEach(k=> w[k]/=sumW);
+    const raw = w.C1*C1 + w.C2*C2 + w.C3*C3 + w.C4*C4 + w.C5*C5 + w.C6*C6;
+    const prev = +((localStorage.getItem(`risk:${owner}:${year}`))||raw);
+    const risk = clip(0.7*prev + 0.3*raw, 0, 10);
+    localStorage.setItem(`risk:${owner}:${year}`, risk.toFixed(2));
+    const zone = risk<2?'Comfort 🟢': risk<4?'Balanced ⚪️': risk<7?'Warning 🟠':'Risk 🔴';
+
+    return {
+      zone, risk:+risk.toFixed(2), T, A, pct:+(A*100/Math.max(1,T)).toFixed(1),
+      dLeft, year, need_day:Math.round(need_day), act_day:Math.round(act_day)
+    };
+  }
+
+  function buildText(msg){
+    const lines = [];
+    lines.push(`Status Zone: ${msg.zone}`);
+    lines.push('');
+    lines.push('In-Depth Breakdown:');
+    lines.push(`• Target vs Inflow: Target AED ${fmt(msg.T)} — Inflow AED ${fmt(msg.A)} (${msg.pct}%).`);
+    lines.push(`• Time Factor: ${fmt(msg.dLeft)} days left in ${msg.year}.`);
+    lines.push(`• Daily Needed Rate: ${fmt(msg.need_day)} per day to hit target; recent pace ${fmt(msg.act_day)} per day.`);
+    lines.push(`• Momentum & Risk: Risk Score ${msg.risk}/10 (${msg.zone.replace(/^[^ ]+\s+/,'')}).`);
+    return lines.join('\n');
+  }
+
+  function ensureModal(){
+    let modal = document.getElementById('aiV1Modal');
+    if (!modal){
+      modal = document.createElement('div');
+      modal.id = 'aiV1Modal';
+      modal.innerHTML = \`
+        <div class="ai-box">
+          <div class="ai-head">
+            <h3>AI Analysis</h3>
+            <button class="btn" id="aiV1Close">Close</button>
+          </div>
+          <div id="aiV1Content" class="ai-body"></div>
+          <div class="ai-actions">
+            <button class="btn" id="aiV1Copy">Copy</button>
+            <a class="btn" id="aiV1WA" href="#" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+        </div>\`;
+      document.body.appendChild(modal);
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.style.display='none'; });
+      modal.querySelector('#aiV1Close').addEventListener('click', ()=> modal.style.display='none');
+      modal.querySelector('#aiV1Copy').addEventListener('click', async ()=>{
+        const text = document.getElementById('aiV1Content').innerText.trim();
+        try{ await navigator.clipboard.writeText(text); }catch(e){ /* ignore */ }
+      });
+    }
+    return modal;
+  }
+
+  function openWithText(text){
+    const modal = ensureModal();
+    document.getElementById('aiV1Content').innerText = text;
+    const wa = modal.querySelector('#aiV1WA');
+    wa.href = 'https://wa.me/?text=' + encodeURIComponent(text);
+    modal.style.display = 'flex';
+  }
+
+  function computeAndShow(){
+    const saved = JSON.parse(localStorage.getItem('performanceTracker:activeOwnerYear')||'{}');
+    const owner = saved.owner || window.activeOwner || 'owner1';
+    const year  = saved.year  || window.activeYear  || new Date().getFullYear();
+    const data = collectYearData(owner, year);
+    const msg = aiAnalysis(owner, year, data);
+    openWithText(buildText(msg));
+  }
+
+  // Expose API
+  const api = {
+    computeAndShow,
+    teardown(){
+      document.getElementById('aiV1Modal')?.remove();
+      document.getElementById('ai-analysis-style-v1')?.remove();
+      window.__aiV1 = null;
+    }
+  };
+  window.__aiV1 = api;
+
+  // Wire existing AI buttons if present
+  const btn = document.querySelector('#btnAIAnalysis, .btn-ai, [data-role="aiAnalysis"]');
+  if (btn && !btn.__aiWired){
+    btn.addEventListener('click', (e)=>{ e.preventDefault(); computeAndShow(); });
+    btn.__aiWired = true;
+  }
+
+})();</script>
 
 </body>
 </html>
@@ -23737,5 +24967,127 @@ document.addEventListener("DOMContentLoaded", function() {
     markPageLoaded();
   }
   window.addEventListener('load', markPageLoaded);
+})();
+</script>
+<style id="unified-table-headers-strong-2025-09-15b">
+/* === Unified Column Headers — Strong Override (scoped & last) === */
+.tableCard table thead th,
+.tableCard table tfoot th,
+table thead th,
+table tfoot th,
+.tableCard table thead th *,
+.tableCard table tfoot th * {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: var(--text-bold) !important;
+  line-height: 1.2 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+/* Normalize nested spans/b/strong within headers */
+table thead th span, table thead th b, table thead th strong,
+table tfoot th span, table tfoot th b, table tfoot th strong {
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  color: inherit !important;
+}
+</style>
+<script id="enter-to-save-2025-09-15b">
+(function(){
+  const MODAL_IDS = ['notesModal','projectModal','dateModal'];
+  const MODAL_INPUT_SELECTORS = 'input, textarea, [contenteditable="true"]';
+
+  function findModal(id){
+    const el = document.getElementById(id);
+    if (!el) return null;
+    // Only consider visible
+    const cs = getComputedStyle(el);
+    const visible = el.classList.contains('visible') || cs.display !== 'none' && cs.visibility !== 'hidden' && cs.opacity !== '0';
+    return visible ? el : null;
+  }
+
+  function findPrimarySaveBtn(modal){
+    if(!modal) return null;
+    // Restrict search within the modal to avoid acting outside
+    const candidates = Array.from(modal.querySelectorAll('button, [role="button"]'));
+    const priority = candidates.filter(b => (
+      b.matches('.save, .save-btn, .btn-save, .primary, .confirm, [data-save], [data-action="save"], [data-role="save"]')
+    ));
+    if (priority.length) return priority[0];
+    const keywords = ['save','ok','done','update','apply','confirm'];
+    for (const b of candidates) {
+      const txt = (b.textContent || '').trim().toLowerCase();
+      if (keywords.some(k => txt === k || txt.includes(k))) return b;
+    }
+    // Footer-like area inside this modal only
+    const footers = modal.querySelectorAll('.modal-footer, .actions, .buttons');
+    for (const f of footers) {
+      const btns = f.querySelectorAll('button, [role=\"button\"]');
+      if (btns.length) return btns[btns.length - 1];
+    }
+    return null;
+  }
+
+  function closeModal(modal){
+    if(!modal) return;
+    const closeBtn = modal.querySelector('.close-btn, .btn-close, [data-dismiss], [data-action=\"close\"]');
+    if (closeBtn) { closeBtn.click(); return; }
+    modal.classList.remove('visible');
+    modal.style.display = 'none';
+  }
+
+  function onKey(e){
+    if (e.key !== 'Enter' || e.shiftKey) return;
+    // Only handle if focus is inside one of our specific modals
+    const active = document.activeElement;
+    if (!active) return;
+    const modal = MODAL_IDS.map(findModal).find(Boolean);
+    if (!modal) return;
+    if (!modal.contains(active)) return; // stay strictly inside modal
+    if (!active.matches(MODAL_INPUT_SELECTORS)) return; // only from fields
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      active.dispatchEvent(new Event('input', {bubbles:true}));
+      active.dispatchEvent(new Event('change', {bubbles:true}));
+    } catch(_){}
+    const btn = findPrimarySaveBtn(modal);
+    if (btn) btn.click();
+    setTimeout(() => closeModal(modal), 30);
+  }
+
+  function bindInlineTable(){
+    const table = document.querySelector('.tableCard table, table');
+    if (!table || table.__enterInlineBound) return;
+    table.__enterInlineBound = true;
+    table.addEventListener('keydown', function(ev){
+      const td = ev.target && ev.target.closest && ev.target.closest('td');
+      if (!td) return;
+      const isEditable = td.matches('.editable, .project, [contenteditable=\"true\"]');
+      if (!isEditable) return;
+      if (ev.key === 'Enter' && !ev.shiftKey) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        try {
+          ev.target.dispatchEvent(new Event('input', {bubbles:true}));
+          ev.target.dispatchEvent(new Event('change', {bubbles:true}));
+        } catch(_){}
+        if (document.activeElement) document.activeElement.blur();
+      }
+    }, true);
+  }
+
+  function init(){
+    if (document.__enterToSaveB) return;
+    document.__enterToSaveB = true;
+    document.addEventListener('keydown', onKey, true);
+    bindInlineTable();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, {once:true});
+  } else {
+    init();
+  }
 })();
 </script>
