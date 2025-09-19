@@ -48,8 +48,8 @@ input[type="color"] { display: none !important; visibility: hidden !important; }
   * {
     animation: none !important;
     transition: none !important;
-    backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
     filter: none !important;
     text-shadow: none !important;
     box-shadow: none !important;
@@ -1231,7 +1231,33 @@ canvas#scn-chart,
   margin-top: 10px !important;
   margin-bottom: 10px !important;
 }
-</style></head>
+</style>
+
+
+
+<style id="mo-share-css-ICON-ONLY-VISIBLE">
+#moShareBtn{
+  position:absolute;
+  left:12px;
+  top:6mm; /* lowered 2mm from the 4mm position */
+  background:#0f9d58;
+  color:#fff;
+  border:none;
+  border-radius:999px;
+  width:34px; height:34px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; line-height:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.18);
+  cursor:pointer;
+  opacity:.72; /* slightly more visible */
+  transition:opacity .2s ease, transform .08s ease;
+  z-index: 30;
+}
+#moShareBtn:hover{ opacity:1 }
+#moShareBtn:active{ transform:scale(.97) }
+</style>
+
+</head>
 <body class='\"dark\"'>
 <script>
 // Immediately add 'loaded' class to prevent flicker
@@ -1488,6 +1514,7 @@ document.body.classList.add('loaded');
       font-size: 22px;
       margin-left: 4px;
       color: var(--accent);
+      -webkit-user-select: none;
       user-select: none;
       display: inline-flex;
       align-items: center;
@@ -1776,6 +1803,7 @@ document.body.classList.add('loaded');
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      -webkit-user-select: none;
       user-select: none;
       overflow: hidden;
       animation: heatmapCellFadeIn 0.6s ease-out both;
@@ -2363,8 +2391,8 @@ select#ownerSelect {
   background: transparent;
   cursor: pointer;
   vertical-align: middle;
-  appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   border-radius: 50%;
   outline: none;
   opacity: 0.9;
@@ -3720,6 +3748,7 @@ body.dark #nextTargetCard::before {
   /* Fancy colored Year label that mirrors owner styling */
   #yearFancy { 
     vertical-align: middle; 
+    -webkit-user-select: none;
     user-select: none;
   }
   @media (max-width:700px){
@@ -3928,7 +3957,8 @@ body.__exporting a {
 <style>
 /* === Share Everywhere (v7) === */
 .share-icon{
-  display:inline-block; margin-left:8px; cursor:pointer; user-select:none;
+  display:inline-block; margin-left:8px; cursor:pointer; -webkit-user-select:none;
+  user-select:none;
   font-size: 14px; opacity:.85; line-height:1;
   padding:2px 6px; border-radius:8px; border:1px solid rgba(0,0,0,.12);
 }
@@ -3949,7 +3979,8 @@ th.share-col{ width:32px; text-align:center; }
 td.number-cell{ position: relative; }
 td.number-cell .num-share{ 
   position:absolute; top:4px; right:4px; 
-  font-size: 13px; line-height:1; opacity:.85; cursor:pointer; user-select:none;
+  font-size: 13px; line-height:1; opacity:.85; cursor:pointer; -webkit-user-select:none;
+  user-select:none;
   border:1px solid rgba(0,0,0,.15); border-radius:6px; padding:1px 4px; background:rgba(255,255,255,.8);
 }
 body.dark td.number-cell .num-share{ background:rgba(0,0,0,.35); border-color:rgba(255,255,255,.25); }
@@ -3960,7 +3991,8 @@ td.number-cell .num-share:hover{ opacity:1; transform:translateY(-1px); }
 td.number-cell{ position: relative; cursor: pointer; }
 td.number-cell .num-share{ 
   position:absolute; top:4px; right:4px; 
-  font-size: 13px; line-height:1; opacity:.85; user-select:none;
+  font-size: 13px; line-height:1; opacity:.85; -webkit-user-select:none;
+  user-select:none;
   border:1px solid rgba(0,0,0,.15); border-radius:6px; padding:1px 4px; background:rgba(255,255,255,.8);
 }
 body.dark td.number-cell .num-share{ background:rgba(0,0,0,.35); border-color:rgba(255,255,255,.25); }
@@ -4849,6 +4881,7 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
   font-style: italic;
   color: #000;
   opacity: 0.9;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -4862,6 +4895,7 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
   font-size: 17px;
   font-weight: 600;
   color: #000;
+  -webkit-user-select: none;
   user-select: none;
 }
 </style>
@@ -5410,7 +5444,19 @@ button.btn-refresh, a.btn-refresh, [onclick*="hardRefresh"] {
 <div class="headerTopFull">
 <div class="title-left">
 <div style="display:flex; flex-direction:column;">
-<h1 id="enbd-title" style="font-weight:600;font-size: 18px;color:#111;margin-top:7mm;">ENBD Performance Tracker</h1>
+  <div id="header-shell" style="position:relative;width:100%;">
+  <span id="ayat-badge" data-offset-cm-y="-2.475" data-offset-cm-x="0.2" style="position:fixed;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;background:#000;border-radius:999px;margin-right:0;vertical-align:middle;z-index:9999;visibility:hidden;">
+    <img id="ayat-logo" src="assets/Ayat_colored.png" alt="Ayat" onerror="(function(img){img.style.display='none';var s=document.getElementById('ayat-svg'); if(s) s.style.display='inline-block';})(this);" style="width:34px;height:34px;object-fit:contain;display:inline-block;"/>
+    <!-- Inline SVG fallback shown only when the external PNG is missing -->
+    <svg id="ayat-svg" width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" style="display:none;">
+      <circle cx="18" cy="18" r="18" fill="#000" />
+      <text x="18" y="22" font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#fff" text-anchor="middle">AYAT</text>
+    </svg>
+    </span>
+  <div id="header-left" style="padding-right:58px;">
+      <h1 id="enbd-title" style="font-weight:600;font-size: 18px;color:#111;display:inline-block;vertical-align:middle;margin:0;padding:0;">ENBD Performance Tracker</h1>
+    </div>
+  </div>
 <!-- Creator credit moved below the title -->
 <p class="tiny owner-name-chalk" style='margin-top:6px;;color:#111;font-family:"Chalkboard","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;font-size: 15px;'>created by Fuad Al-Taher</p>
 </div>
@@ -18701,6 +18747,7 @@ var idxTarget = findHeaderIndex([/target|needed|req/i]);
     font-size: 13px;
     line-height: 1;
     color: #2a3a3a;
+    -webkit-user-select: none;
     user-select: none;
   }
   .ntw-toggle .dot{
@@ -19418,9 +19465,10 @@ var idxTarget = findHeaderIndex([/target|needed|req/i]);
 
   setTxt("kpiVal_target", fmtPos(target));
     setTxt("kpiVal_ytd",    fmtPos(ytd));
-    // Balance: sign-aware text & colour
-  setTxt("kpiVal_rem", fmtAny(rem));
-  try { setKpiClass("kpiVal_rem", rem); } catch(e){}
+    // Balance: sign-aware text & colour (ytd - target)
+    var balance = ytd - target;
+  setTxt("kpiVal_rem", fmtAny(balance));
+  try { setKpiClass("kpiVal_rem", balance); } catch(e){}
   setTxt("kpiVal_ob",     fmtAny(ob)); // OB can be ±; switch to fmtPos if you want only ≥0
   // colorize by sign where appropriate (skip balance which is forced red)
   try { setKpiClass("kpiVal_ob", ob); } catch(e){}
@@ -21114,8 +21162,515 @@ document.addEventListener("DOMContentLoaded", function() {
 })();
 </script>
 <!-- === /Time‑Aware AI Analysis injection === -->
+
+
+
+
+
+
+
+
+
+
+<script id="mo-share-js-ICON-ONLY-AVGMO">
+(function(){
+  const DUBAI_TZ = "Asia/Dubai";
+  const NAT_KEY  = "moShare:naturalAED";
+  const NAME_KEY = "moShare:recipientName";
+  const SEL_KEY  = "moShare:cardSelector";
+
+  const load=(k,d)=>{ try{const v=localStorage.getItem(k); return v==null?d:v;}catch(e){return d;} };
+  const save=(k,v)=>{ try{localStorage.setItem(k,v);}catch(e){} };
+
+  function monthName(){
+    const d = new Date(new Date().toLocaleString("en-US",{timeZone:DUBAI_TZ}));
+    return d.toLocaleString("en-US",{month:"long"});
+  }
+
+  function findNeededCard(){
+    const saved = load(SEL_KEY);
+    if (saved){
+      const node = document.querySelector(saved);
+      if (node) return node;
+    }
+    // First try the specific KPI element
+    const kpiLabel = document.getElementById('kpiLabel_monthlyNeeded');
+    if (kpiLabel) {
+      const kpiItem = kpiLabel.closest('.kpi-item');
+      if (kpiItem) return kpiItem;
+    }
+    // Fallback to text search
+    const nodes = document.querySelectorAll("section,div,article");
+    for(const el of nodes){
+      const t = (el.textContent||"").replace(/\u00A0/g," ");
+      if (/Mo\.?\s+Needed\s+Inflow\s+To\s+End\s+of\s+the\s+Year/i.test(t) && /months?\s+remain/i.test(t)){
+        return el;
+      }
+    }
+    return null;
+  }
+
+  function extractValidNumbersFromText(txt){
+    // Skip style-like text such as "rgb(255,255,255,1)"
+    if (/rgba?\s*\(/i.test(txt)) return [];
+    const out = [];
+    const re = /(?<![A-Za-z0-9])(?:AED\s*)?(\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?![A-Za-z0-9])/g;
+    let m;
+    while ((m = re.exec(txt))){
+      const raw = m[0];
+      const hasAED = /^AED/i.test(raw.trim());
+      // ensure commas (if any) are valid thousands separators (e.g., 1,234,567 not 255,255,255,1)
+      const numPart = raw.replace(/^\s*AED\s*/i, '');
+      if (/,/.test(numPart) && !/^\d{1,3}(?:,\d{3})+(?:\.\d+)?$/.test(numPart)) continue;
+      const numeric = parseFloat(numPart.replace(/,/g,''));
+      if (!isNaN(numeric) && isFinite(numeric)) out.push({ value:numeric, hasAED });
+    }
+    return out;
+  }
+
+  function extractNeededAED(root){
+    const walker = document.createTreeWalker(root||document, NodeFilter.SHOW_TEXT, null);
+    let n; const found = [];
+    while(n = walker.nextNode()){
+      const txt = (n.nodeValue||"").replace(/\u00A0/g," ");
+      const arr = extractValidNumbersFromText(txt);
+      if (arr.length) found.push(...arr);
+    }
+    if (!found.length) return null;
+    // Prefer AED-labelled numbers; else largest
+    const withAED = found.filter(x=>x.hasAED);
+    const pool = withAED.length ? withAED : found;
+    pool.sort((a,b)=>b.value - a.value);
+    return pool[0].value;
+  }
+
+  function findAvgMoInflow(){
+    const nodes = document.querySelectorAll("section,div,article,li,span");
+    let best = null;
+    for(const el of nodes){
+      const t = (el.textContent||"").replace(/\u00A0/g," ");
+      console.log("Checking element text:", t.substring(0, 100)); // Debug log
+      if (/(Mo\.?\s*Needed\s*Inflow\s*To\s*End\s*of\s*the\s*Year|remains|Avg\.?\s*Mo\.?\s*Inflow|Average\s+Monthly\s+Inflow)/i.test(t)){
+        console.log("Found matching element:", t.substring(0, 200)); // Debug log
+        // scan only inside this element
+        const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+        let n; const local = [];
+        while(n = walker.nextNode()){
+          const txt = (n.nodeValue||"").replace(/\u00A0/g," ");
+          console.log("Text node content:", txt); // Debug log
+          const arr = extractValidNumbersFromText(txt);
+          if (arr.length) local.push(...arr);
+        }
+        // prefer AED-labelled values here too
+        const withAED = local.filter(x=>x.hasAED);
+        const pool = withAED.length ? withAED : local;
+        if (pool.length){
+          pool.sort((a,b)=>b.value-a.value);
+          const val = pool[0].value;
+          console.log("Found value:", val); // Debug log
+          if (best==null || val>best) best = val;
+        }
+      }
+    }
+    console.log("Final best value:", best); // Debug log
+    return best;
+  }
+
+  const fmt = n => Number(n||0).toLocaleString("en-US",{maximumFractionDigits:0});
+
+  function buildMonthlyMessage(needed, natural, name, logoUrl){
+    const month = monthName();
+    const deposit = Math.max(0, (Number(needed||0) - Number(natural||0)));
+    var out = `Dear ${name},\n\n` +
+`📊 Monthly Inflow Plan — ${month}\n\n` +
+`• Required to stay on target: AED ${fmt(needed)}\n\n` +
+`• Expected natural inflow (rents/cheques — approximate): AED ${fmt(natural)}\n\n` +
+`• Cheque deposit required: AED ${fmt(deposit)} (= AED ${fmt(needed)} − AED ${fmt(natural)})\n\n` +
+`📌 Action: please arrange depositing AED ${fmt(deposit)} this month to keep us on target.\n\n` +
+`Note: Expected natural inflow is an approximate estimate based on the 📊 Avg. Mo. Inflow (past months' average).\n\n` +
+`Thanks.`;
+    // Append logo information (prefer absolute URL if available, else a short credit)
+    try{
+      if(logoUrl && /^https?:\/\//i.test(logoUrl)){
+        out += "\n\nLogo: " + logoUrl;
+      } else if (logoUrl){
+        out += "\n\nPowered by Ayat";
+      }
+    }catch(e){}
+    return out;
+  }
+
+  // Try to locate a usable logo URL for the Ayat badge. Prefer absolute HTTP(S) src; else serialize inline SVG to a data URL.
+  function findAyatLogoUrl(){
+    try{
+      var img = document.getElementById('ayat-logo');
+      if(img && img.src){
+        // If src is an absolute http/https URL, return it; otherwise skip (local file paths won't be useful for sharing)
+        if(/^https?:\/\//i.test(img.src)) return img.src;
+      }
+      var svg = document.getElementById('ayat-svg');
+      if(svg){
+        var svgText = svg.outerHTML || svg.innerHTML || '';
+        if(svgText) return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgText);
+      }
+    }catch(e){}
+    return null;
+  }
+
+  function doShare(card, method){
+    // Prefer the KPI #10 displayed value (Mo. Needed Inflow To End of the Year)
+    function parseKpiIdToNumber(id){
+      try{
+        var el = document.getElementById(id);
+        if(!el) return null;
+        var txt = (el.textContent||el.innerText||'').trim();
+        txt = txt.replace(/AED/gi,'').replace(/,/g,'').replace(/\s+/g,'');
+        if(!txt) return null;
+        var n = Number(txt);
+        return isFinite(n) ? n : null;
+      }catch(e){ return null; }
+    }
+
+    var needed = null;
+    // try KPI element first (kpiVal_monthlyNeeded), then fallback to extractor
+    needed = parseKpiIdToNumber('kpiVal_monthlyNeeded') || (card ? extractNeededAED(card) : null);
+    if(!needed){ needed = extractNeededAED(document); }
+    if(!needed){
+      const inp = prompt("Monthly needed (AED):","7960739"); if(inp==null) return;
+      const s = String(inp).replace(/,/g,"").trim();
+      if(!/^\d+(\.\d+)?$/.test(s)) return alert("Please enter a number, e.g., 7960739");
+      needed = +s;
+    }
+
+    // Prefer the displayed KPI #6 value (Avg. Mo. Inflow) when available
+    function parseKpiTextToNumber(id){
+      try{
+        var el = document.getElementById(id);
+        if(!el) return null;
+        var txt = (el.textContent||el.innerText||'').trim();
+        txt = txt.replace(/AED/gi,'').replace(/,/g,'').replace(/\s+/g,'');
+        if(!txt) return null;
+        var n = Number(txt);
+        return isFinite(n) ? n : null;
+      }catch(e){ return null; }
+    }
+
+    var natFromKpi = parseKpiTextToNumber('kpiVal_avgActualMonthly') || parseKpiTextToNumber('repAvgMonthlyInflow');
+    const derived = (natFromKpi != null) ? natFromKpi : findAvgMoInflow();
+    const nat = derived != null ? derived : 0; // Use automatic value, default to 0 if not found
+
+    const prevName = load(NAME_KEY, "Fuad");
+    let name = prompt("Address to (name):", prevName); if(name==null) return;
+    name = name.trim() || "Sir/Madam";
+    save(NAME_KEY, name);
+
+    // Simple calculation: deposit required = needed - natural inflow
+    const depositRequired = Math.max(0, needed - nat);
+
+  const msg = buildMonthlyMessage(needed, nat, name, findAyatLogoUrl());
+
+    // Handle different sharing methods
+    switch(method){
+      case 'whatsapp':
+        const waUrl = "https://wa.me/?text="+encodeURIComponent(msg);
+        window.open(waUrl,"_blank","noopener");
+        break;
+      case 'telegram':
+        const tgUrl = "https://t.me/share/url?url=&text="+encodeURIComponent(msg);
+        window.open(tgUrl,"_blank","noopener");
+        break;
+      case 'email':
+        const subject = encodeURIComponent("Monthly Inflow Plan — " + monthName());
+        const body = encodeURIComponent(msg);
+        const emailUrl = `mailto:?subject=${subject}&body=${body}`;
+        window.open(emailUrl,"_blank","noopener");
+        break;
+      case 'copy':
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(msg).then(() => {
+            alert("Message copied to clipboard!");
+          }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement("textarea");
+            textArea.value = msg;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            alert("Message copied to clipboard!");
+          });
+        } else {
+          // Fallback for very old browsers
+          const textArea = document.createElement("textarea");
+          textArea.value = msg;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+          alert("Message copied to clipboard!");
+        }
+        break;
+      case 'sms':
+        const smsUrl = "sms:?body="+encodeURIComponent(msg);
+        window.open(smsUrl,"_blank","noopener");
+        break;
+      default:
+        // Default to WhatsApp
+        const defaultUrl = "https://wa.me/?text="+encodeURIComponent(msg);
+        window.open(defaultUrl,"_blank","noopener");
+    }
+  }
+
+  function mount(){
+    const card = findNeededCard();
+    if (!card) return;
+    const cs = getComputedStyle(card);
+    if (cs.position === "static") card.style.position="relative";
+    let container = document.getElementById("moShareContainer"); if (container) container.remove();
+  container = document.createElement("div");
+  container.id="moShareContainer";
+  // Nudge the control up by 7mm (4mm previous + 3mm additional) for a tighter visual alignment with the KPI
+  container.style.transform = 'translateY(-7mm)';
+  container.style.transformOrigin = 'left top';
+  // compact inline-flex container so buttons are slim and aligned
+  container.style.display="inline-flex";
+  container.style.gap = "2px";
+  container.style.alignItems = "center";
+  container.style.position="relative";
+
+    // Main share button (slim, icon-only)
+    const mainBtn = document.createElement("button");
+    mainBtn.type = "button";
+  mainBtn.title = "Share monthly plan (default: WhatsApp)";
+  mainBtn.setAttribute('aria-label', 'Share monthly plan (WhatsApp)');
+  // Use an inline SVG (crisper than emoji) for the share icon
+  mainBtn.innerHTML = '<svg width="8" height="8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+      + '<path d="M4 12v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
+      + '<path d="M16 6l-4-4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
+      + '<path d="M12 2v14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
+      + '</svg>';
+    mainBtn.setAttribute('aria-label', 'Share monthly plan');
+    mainBtn.style.cssText = [
+      "display:inline-flex",
+      "align-items:center",
+      "justify-content:center",
+  "width:16px",
+  "height:16px",
+  "padding:0px",
+  "font-size:11px",
+  "line-height:1",
+  "border-radius:6px",
+  "border:1px solid rgba(0,0,0,0.10)",
+      "background: rgba(255,255,255,0.95)",
+      "color: #111",
+      "cursor:pointer",
+      "box-shadow: none",
+      "transition: transform .06s ease, box-shadow .06s ease"
+    ].join(';');
+    // Dark mode tweak
+    try{ if(document.body && document.body.classList.contains('dark')){
+      mainBtn.style.background = 'rgba(40,40,40,0.9)';
+      mainBtn.style.borderColor = 'rgba(255,255,255,0.06)';
+      mainBtn.style.color = '#fff';
+    }}catch(e){}
+    mainBtn.addEventListener('mouseenter', ()=> mainBtn.style.transform = 'translateY(-1px)');
+    mainBtn.addEventListener('mouseleave', ()=> mainBtn.style.transform = 'translateY(0)');
+    // Normal click: open the share menu so other channels are always visible.
+    // Shift+Click provides a quick WhatsApp share shortcut.
+    mainBtn.addEventListener("click", function(e){
+      e.stopPropagation();
+      // Shift+Click => quick WhatsApp share
+      if (e.shiftKey){ try{ doShare(card, 'whatsapp'); }catch(e){ console.warn('Share failed', e); } return; }
+
+      const menu = container.querySelector('.share-menu');
+      if(!menu) return;
+      const isOpen = (menu.style.display === 'block');
+      if(isOpen){ menu.style.display = 'none'; return; }
+
+      // Measure and position menu to the side (right by default). Flip to left if not enough space.
+      try{
+        // Ensure menu is measured while not display:none (use visibility hidden to avoid layout shift)
+        menu.style.display = 'block';
+        menu.style.visibility = 'hidden';
+        menu.style.left = 'auto';
+        menu.style.right = 'auto';
+        menu.style.top = 'auto';
+
+        const iconRect = mainBtn.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+        const viewportW = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const viewportH = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+        // Preferred: place the menu so its left aligns to iconRect.right + 6px gap
+        const gap = 6;
+        const preferredLeft = iconRect.right + gap;
+        const spaceRight = viewportW - preferredLeft;
+
+        // Compute vertical positioning: top aligned to icon top, but clamp to viewport
+        let top = iconRect.top;
+        if (top + menuRect.height > viewportH) top = Math.max(6, viewportH - menuRect.height - 6);
+        if (top < 6) top = 6;
+
+        // Apply positioning relative to container (menu is absolute inside container)
+        // Convert viewport coords to container-local by subtracting container's bounding rect
+        const containerRect = container.getBoundingClientRect();
+        const localTop = top - containerRect.top;
+
+        if (spaceRight >= menuRect.width){
+          // Enough space to the right — position menu's left at iconRect.right relative to container
+          const localLeft = (iconRect.right - containerRect.left) + gap;
+          menu.style.left = localLeft + 'px';
+          menu.style.right = 'auto';
+        } else {
+          // Not enough space to the right — flip to left of icon
+          const localRight = containerRect.right - iconRect.left + gap;
+          menu.style.right = localRight + 'px';
+          menu.style.left = 'auto';
+        }
+
+        menu.style.top = localTop + 'px';
+        // Restore visibility
+        menu.style.visibility = 'visible';
+        menu.style.display = 'block';
+      }catch(err){
+        // Fallback: simple toggle if measurement fails
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+      }
+    });
+    // Keyboard: Enter or Space opens the share menu (WhatsApp is the first option)
+    mainBtn.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); try{ mainBtn.click(); }catch(_){} }
+    });
+  // No hover label: keep control minimal
+
+    // No separate dropdown control; menu toggles from the single compact button above.
+
+    // Dropdown menu
+    const menu = document.createElement("div");
+  menu.className = "share-menu";
+  menu.style.cssText = "display: none; position: absolute; top: 100%; left: 0; background: white; border: 1px solid rgba(0,0,0,0.08); border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); z-index: 1000; min-width: 120px; margin-top: 2px; font-size:11px;";
+
+    const options = [
+      { method: 'whatsapp', label: '📱 WhatsApp', color: '#25d366' },
+      { method: 'telegram', label: '✈️ Telegram', color: '#0088cc' },
+      { method: 'email', label: '📧 Email', color: '#ea4335' },
+      { method: 'copy', label: '📋 Copy Text', color: '#666' },
+      { method: 'sms', label: '💬 SMS', color: '#34c759' }
+    ];
+
+    options.forEach(opt => {
+  const item = document.createElement("div");
+  item.style.cssText = `padding: 3px 6px; cursor: pointer; font-size: 11px; border-bottom: 1px solid rgba(0,0,0,0.06); color: ${opt.color};`;
+      item.textContent = opt.label;
+      item.addEventListener("click", function(){
+        doShare(card, opt.method);
+        menu.style.display = 'none';
+      });
+      item.addEventListener("mouseenter", function(){ this.style.background = '#f8f8f8'; });
+      item.addEventListener("mouseleave", function(){ this.style.background = 'white'; });
+      menu.appendChild(item);
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", function(e){
+      if(!container.contains(e.target)){
+        menu.style.display = 'none';
+      }
+    });
+
+  container.appendChild(mainBtn);
+    container.appendChild(menu);
+    card.appendChild(container);
+  }
+
+  if (document.readyState==="loading") document.addEventListener("DOMContentLoaded", mount);
+  else mount();
+  window.addEventListener("load", ()=> setTimeout(mount,0));
+})();
+</script>
+
 </body>
 </html>
+<script>
+  // Replace the badge with a fresh, static element to avoid other scripts mutating it.
+  (function(){
+    function cmToPx(cm){ return Math.round(cm * 37.7952755906); }
+    function createStaticBadge(){
+      // avoid double-creation if this runs multiple times
+      if (window.__ayatBadgeCreated) return;
+      var old = document.getElementById('ayat-badge');
+      if(!old) return;
+      // read offsets from the original element, then remove it so there's no visual duplicate
+      var offX = old.getAttribute('data-offset-cm-x') || old.getAttribute('data-offset') || '0';
+      var offY = old.getAttribute('data-offset-cm-y') || '0';
+      var inner = old.innerHTML || '';
+      try{ old.parentNode && old.parentNode.removeChild(old); }catch(e){}
+
+  // remove any previously-created body-mounted badge duplicates
+  try{ document.querySelectorAll('body > .ayat-badge-fixed, body > #ayat-badge').forEach(function(n){ if(n && n.parentNode) n.parentNode.removeChild(n); }); }catch(e){}
+
+  // create new badge container and copy inner content
+  var badge = document.createElement('span');
+      badge.id = 'ayat-badge';
+      badge.className = 'ayat-badge-fixed';
+      badge.setAttribute('aria-hidden','true');
+  // start hidden to avoid flashing at the original header position
+  try{ badge.style.setProperty('visibility','hidden','important'); }catch(e){}
+      badge.innerHTML = inner;
+      // persist offsets on the new badge element so reposition reads from it directly
+      badge.setAttribute('data-offset-cm-x', offX);
+      badge.setAttribute('data-offset-cm-y', offY);
+  document.body.appendChild(badge);
+  // mark created so subsequent runs are nop
+  try{ window.__ayatBadgeCreated = true; }catch(e){}
+
+      // create or get the static style element we'll update when repositioning
+      var s = document.getElementById('ayat-badge-static-style');
+      if(!s){ s = document.createElement('style'); s.id = 'ayat-badge-static-style'; document.head.appendChild(s); }
+
+      function repositionBadge(){
+        try{
+          var src = document.getElementById('ayat-badge');
+          if(!src || !badge) return;
+          var offX = parseFloat(src.getAttribute('data-offset-cm-x')||'0') || 0;
+          var offY = parseFloat(src.getAttribute('data-offset-cm-y')||'0') || 0;
+          var hdr = document.getElementById('header-shell') || document.querySelector('header') || document.body;
+          var rect = hdr.getBoundingClientRect();
+          var topPx = Math.round(rect.top + (rect.height/2) + cmToPx(offY));
+          topPx = Math.max(4, Math.min(window.innerHeight - 48 - 4, topPx));
+          var rightPx = cmToPx(offX) || 0;
+
+          // Update the CSS rule and also set inline properties with important priority
+          var css = '.ayat-badge-fixed{position:fixed !important; right:'+rightPx+'px !important; top:'+topPx+'px !important; left:auto !important; width:48px !important; height:48px !important; display:inline-flex !important; align-items:center !important; justify-content:center !important; background:#000 !important; border-radius:999px !important; z-index:2147483647 !important; transform:none !important; transition:none !important;}\n.ayat-badge-fixed img{width:34px !important;height:34px !important;object-fit:contain !important;}';
+          if(s.styleSheet) s.styleSheet.cssText = css; else s.textContent = css;
+
+              // Also set inline style properties with priority to immediately reflect change
+          try{
+            badge.style.setProperty('right', rightPx + 'px', 'important');
+            badge.style.setProperty('top', topPx + 'px', 'important');
+            badge.style.setProperty('position', 'fixed', 'important');
+            badge.style.setProperty('left', 'auto', 'important');
+            badge.style.setProperty('width', '48px', 'important');
+            badge.style.setProperty('height', '48px', 'important');
+          }catch(e){}
+              // Reveal the badge only after it has been positioned to prevent initial flash
+              try{ badge.style.setProperty('visibility','visible','important'); }catch(e){}
+        }catch(e){/* no-op */}
+      }
+
+      // Run immediately and on resize
+      repositionBadge();
+      window.addEventListener('resize', repositionBadge);
+      // If someone updates the data-offset attribute dynamically on the new badge, watch it
+      if(window.MutationObserver){
+        var mo = new MutationObserver(function(muts){ repositionBadge(); });
+        mo.observe(badge, { attributes: true, attributeFilter: ['data-offset-cm-x','data-offset-cm-y'] });
+      }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', createStaticBadge);
+    else createStaticBadge();
+  })();
+</script>
 <!-- === FINAL PATCH v26: Ribbon = Next Needed (future-only), Circle = Next Target (nearest with target) === -->
 <script>
 (function(){
@@ -22696,6 +23251,25 @@ document.addEventListener("DOMContentLoaded", function() {
   .cheq-amt{font-weight:700;color:var(--orange-red-flag,#d65);font-size: 14px}
   .cheq-duebadge{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:linear-gradient(90deg,#fff6f6,#fff1f1);border:1px solid rgba(212,107,107,.25);font-size: 12px;color:#a94442;user-select:none}
   .cheq-ring{font-size: 15px}
+  /* Small square tick to mark cheque deposited */
+  .cheq-tick{width:14px;height:14px;border:1px solid rgba(0,0,0,.12);display:inline-flex;align-items:center;justify-content:center;border-radius:3px;background:#fff;font-size:11px;cursor:pointer}
+  .cheq-tick.checked{background:#e6ffef;border-color:#34c759;color:#057a3a}
+  .cheq-tick.checked::after{content:'✓';font-size:11px;line-height:1}
+  /* When deposited, draw a fine red line across the badge */
+  .cheq-duebadge{position:relative;overflow:visible}
+  .cheq-duebadge.deposited::after{
+    content: '';
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    top: 50%;
+    height: 2px;
+    background: rgba(217,83,79,0.95); /* bootstrap danger-ish */
+    transform: translateY(-50%);
+    border-radius:1px;
+    pointer-events: none;
+    opacity: 1;
+  }
   .cheq-toast{position:fixed;top:80px;right:20px;z-index:2147483647;background:#0d9488;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 10px 26px rgba(0,0,0,.25);display:none}
   .cheq-toast.show{display:block}
   .cheq-fab{position:fixed;right:18px;bottom:20px;z-index:2147483646;pointer-events:auto}
@@ -22815,7 +23389,7 @@ document.addEventListener("DOMContentLoaded", function() {
       (function(){var g=document.getElementById('cheqGCal'); if(g){ g.addEventListener('click', CHEQ.openGoogleCalendar); }})();
       (function(){var g=document.getElementById('cheqGCal'); if(g){ g.addEventListener('click', CHEQ.openGoogleCalendar); }})();
       }
-      CHEQ.prefill(); CHEQ.refreshBadge(); (function(){try{var slot=document.getElementById('cheqMirrorSlot')||document.getElementById('kpiLabel_monthlyNeeded'); if(slot && !document.getElementById('cheqDueBadge')){var b=document.createElement('span'); b.id='cheqDueBadge'; b.className='cheq-duebadge'; b.style.display='none'; b.title='Right‑click to delete reminder'; slot.appendChild(b); b.addEventListener('contextmenu', function(e){e.preventDefault(); CHEQ.deleteAction();}); CHEQ.refreshBadge(); }}catch(e){}})();
+      CHEQ.prefill(); CHEQ.refreshBadge(); (function(){try{var slot=document.getElementById('cheqMirrorSlot'); if(!slot){ var kpi=document.getElementById('kpiLabel_monthlyNeeded'); if(kpi){ slot=document.createElement('span'); slot.id='cheqMirrorSlot'; kpi.appendChild(slot); } } if(slot && !document.getElementById('cheqDueBadge')){var b=document.createElement('span'); b.id='cheqDueBadge'; b.className='cheq-duebadge'; b.style.display='none'; b.title='Right‑click to delete reminder'; slot.appendChild(b); b.addEventListener('contextmenu', function(e){e.preventDefault(); CHEQ.deleteAction();}); CHEQ.refreshBadge(); }}catch(e){}})();
     },
     prefill(){
       const s = CHEQ.load();
@@ -22860,8 +23434,20 @@ document.addEventListener("DOMContentLoaded", function() {
       const s = CHEQ.load(); const badge = document.getElementById('cheqDueBadge');
       if (!badge) return;
       if (!s.dueISO){ badge.style.display='none'; return; }
-      badge.innerHTML = `<span class="cheq-ring">🔔</span><span>${CHEQ.dmy(new Date(s.dueISO))}</span><span>•</span><span>${CHEQ.fmt(s.amount)}</span>`;
-      badge.style.display='inline-flex';
+      // Build inner content with a small tick square to mark deposited
+      const tickId = 'cheqTick';
+      const deposited = !!s.done;
+      badge.innerHTML = `<span class="cheq-ring">🔔</span><span>${CHEQ.dmy(new Date(s.dueISO))}</span><span>•</span><span>${CHEQ.fmt(s.amount)}</span> <span id="${tickId}" class="cheq-tick ${deposited? 'checked':''}" tabindex="0" role="button" aria-pressed="${deposited}"></span>`;
+  badge.style.display='inline-flex';
+  // reflect deposited state visually
+  try{ if (s.done) badge.classList.add('deposited'); else badge.classList.remove('deposited'); }catch(e){}
+      // Attach handlers to toggle deposited state
+      const tick = document.getElementById(tickId);
+      if (tick){
+        const toggle = function(){ const cur = CHEQ.load()||{}; cur.done = !cur.done; if(cur.done) cur.completedAt = new Date().toISOString(); CHEQ.save(cur); CHEQ.refreshBadge(); };
+        tick.addEventListener('click', function(e){ e.stopPropagation(); toggle(); });
+        tick.addEventListener('keydown', function(e){ if (e.key==='Enter' || e.key===' ') { e.preventDefault(); toggle(); } });
+      }
     },
     
     openGoogleCalendar(){
@@ -23443,8 +24029,14 @@ document.addEventListener("DOMContentLoaded", function() {
         var icon = document.createElement('span');
         icon.className = 'share-icon';
         icon.title = 'Share general notes';
-        icon.textContent = '↗';
+        icon.textContent = '🔗';
         icon.style.cursor = 'pointer';
+        icon.style.fontSize = '20px';
+        icon.style.color = '#fff';
+        icon.style.fontWeight = 'bold';
+        icon.style.padding = '4px 6px';
+        icon.style.backgroundColor = 'rgba(255,255,255,0.1)';
+        icon.style.borderRadius = '6px';
         // Place it at the far right of the header row
         header.appendChild(icon);
         existing = icon;
